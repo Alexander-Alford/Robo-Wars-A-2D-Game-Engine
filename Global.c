@@ -2,6 +2,8 @@
 
 #include <Global.h>
 
+float AVERAGE_FPS = 0;
+
 
 GBFS Assign_GBFS(unsigned int* buf)
 {
@@ -254,4 +256,26 @@ int DPS_Remove_Member(DPS* holder, unsigned int index_tbr)
 		holder->non_null--;
 		return 0;	
 	}
+}
+
+//This function controls the main loop by capping its frame rate while optimizing time for intensive loading.
+void FrameControl() 
+{
+	static unsigned int previous_time;
+	static unsigned int current_time;
+	static unsigned int difference_time;
+	
+	unsigned int frame_delay = (1000.f/TARGET_FPS);
+	
+	current_time = SDL_GetTicks();
+	difference_time = (current_time - previous_time);
+	
+	
+	
+	if(difference_time < frame_delay)
+	{
+	SDL_Delay(frame_delay - difference_time);	
+	}
+	
+	previous_time = current_time;
 }

@@ -9,7 +9,7 @@
 
 int WINDOW_WIDTH = 768;
 int WINDOW_HEIGHT = 768;
-int SCREEN_FPS = 60;
+float TARGET_FPS = 60.000;
 
 
 

@@ -68,18 +68,6 @@ void Start_Window()
 	
 	ReadMapData("Assets/Level_Tile", OBJECT_P_ARRAY, 1); //Reads the map data. Physical, graphical, and object.
 
-	BackgroundMusic = Mix_LoadMUS("Assets/Item.wav");
-	
-	if (BackgroundMusic == NULL)
-	{
-	printf("Failed to load music! SDL_mixer Error: %s", Mix_GetError());	
-	}
-	else
-	{
-	Mix_PlayMusic(BackgroundMusic, -1);	
-	Mix_VolumeMusic(20);
-	}	
-
 
 
 }

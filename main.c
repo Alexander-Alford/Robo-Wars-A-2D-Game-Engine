@@ -38,9 +38,9 @@ UpdateObjects();
 
 ManageGraphics();
 	
-PlaySounds();	
-	
-SDL_Delay(16);
+ControlSounds();	
+
+FrameControl();	
 }
 	
 Terminate();

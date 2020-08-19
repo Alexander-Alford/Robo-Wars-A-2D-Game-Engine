@@ -146,7 +146,7 @@ printf("_____________GAME DATA DUMP_____________ \n");
 printf("window size --------> %dx%d (pixels)\n", WINDOW_HEIGHT, WINDOW_WIDTH);
 printf("screen size --------> %dx%d (pixels)\n", SCREEN.h, SCREEN.w);
 printf("screen offsets -----> %d,%d (x,y)\n", SCREEN.x, SCREEN.y);
-printf("fps / frame delay --> %d / %.4f (seconds)\n", SCREEN_FPS, (1.0000/SCREEN_FPS));
+printf("target fps/delay --> %d / %.4f (seconds)\n", TARGET_FPS, (1.0000/TARGET_FPS));
 printf("recognized keys ----> %d (including unknown)\n", TOTAL_KEYS);
 printf("total textures -----> %d \n", TEXTURE_COUNT);
 printf("total objects ------> %d = %d\n", OBJECT_COUNT, OBJECT_P_ARRAY->non_null);

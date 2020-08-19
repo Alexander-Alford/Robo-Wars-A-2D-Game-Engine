@@ -9,6 +9,7 @@ This includes basic 2D tiling(both physical and graphical), reading the map data
 #include <stdio.h>
 #include <stdlib.h>
 #include <Experiment.h>
+#include <Sound.h>
 
 
 /*
@@ -246,13 +247,16 @@ void ReadMapData(const char* PATH, DPS* o_dps, unsigned int level_id)
 		}
 		
 	//Losds level tile and background textures.	
-	char bg_tile_buff[100] = {0};	
+	char bg_tile_music_buff[100] = {0};	
 
-	fscanf(p_LEVEL_FILE, "%100s", &bg_tile_buff);
-	Assign_Tile_Texture_Array(bg_tile_buff);	
+	fscanf(p_LEVEL_FILE, "%100s", &bg_tile_music_buff);
+	Assign_Tile_Texture_Array(bg_tile_music_buff);	
 
-	fscanf(p_LEVEL_FILE, "%100s", &bg_tile_buff);	
-	Background = Assign_Texture(NULL, bg_tile_buff);
+	fscanf(p_LEVEL_FILE, "%100s", &bg_tile_music_buff);	
+	Background = Assign_Texture(NULL, bg_tile_music_buff);
+	
+	fscanf(p_LEVEL_FILE, "%100s", &bg_tile_music_buff);	
+	Load_Music(bg_tile_music_buff);	
 	
 		
 	//Allocates the room tiles.

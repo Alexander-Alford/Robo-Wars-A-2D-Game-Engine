@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 //This structure is a Generic Boolean Flag Structure that can hold eight boolean flags in a single byte. 
 typedef struct 
 {
@@ -50,8 +51,8 @@ void DPS_shuffle(DPS* p_target);
 void DPS_reallocate(DPS* p_target, unsigned int new_num);
 void Destroy_DPS(DPS* p_target);
 int DPS_Add_Member(DPS* target, void* addition, unsigned int possible_expansion);
-//int DPS_Remove_Member(DPS* holder, void *toberemoved);
 int DPS_Remove_Member(DPS* holder, unsigned int index_tbr);
+void FrameControl(); 
 
 //Defined in main.c
 extern char F_Core_Loop;
@@ -62,7 +63,7 @@ extern int GAME_SPEED;
 extern int WINDOW_WIDTH;
 extern int WINDOW_HEIGHT;
 
-extern int SCREEN_FPS;
+extern float TARGET_FPS;
 
 
 

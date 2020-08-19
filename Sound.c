@@ -1,11 +1,10 @@
 #include <Global.h>
-#include <SDL.h>
-#include <SDL_mixer.h>
 #include <string.h>
 
 typedef struct
 {
 Mix_Chunk* p_sound;
+GBFS flg; //a = 
 unsigned int num_playing_sound;
 int channel;
 int repeat;
@@ -89,11 +88,68 @@ void Check_Destroy_Sound(S_Bind* p_check)
 	}
 }
 
+void Add_Sound_To_Play_Queue(S_Bind* addition)
+{
+	if(addition)
+	{
+		for(register int i = 0; i < 100; i++)
+		{
+			if(!TO_PLAY_QUEUE[i])
+			{
+			TO_PLAY_QUEUE[i] = addition;
+			return;			
+			}
+		}
+	
+	printf("Error! No room in que to add sound! \n");
+	}
+	else
+	{
+	printf("Error attempting to add sound to que! \n");	
+	}
+}
 
-void PlaySounds()
+void Load_Music(const char* PATH)
+{
+	if(PATH)
+	{
+	BackgroundMusic = Mix_LoadMUS(PATH);
+		
+		if(!BackgroundMusic)
+		{
+		printf("Failed to load music! SDL_mixer Error: %s", Mix_GetError());	
+		}
+		else
+		{
+		Mix_PlayMusic(BackgroundMusic, -1);	
+		Mix_VolumeMusic(20);	
+		printf("\"%s\" loaded as BGM. \n", PATH);
+		}
+	}
+	else
+	{
+	printf("Error! Music PATH is NULL! /n");	
+	}		
+}
+
+void Play_Sounds()
+{
+	for(register int i = 0; i < 100; i++)
+	{
+		if(TO_PLAY_QUEUE[i])
+		{
+			Mix_PlayChannel(-1, TO_PLAY_QUEUE[i]->p_sound, 0);
+			TO_PLAY_QUEUE[i] = NULL;
+		}
+	}
+}
+
+
+
+void ControlSounds()
 {
 	
-	
+	Play_Sounds();
 	
 	
 }

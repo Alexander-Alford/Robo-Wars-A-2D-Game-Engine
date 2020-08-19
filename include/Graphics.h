@@ -14,23 +14,14 @@ SDL_Window* WINDOW;
 SDL_Renderer* RENDERER;
 SDL_Texture* SCREEN_TEXTURE;
 T_Bind* Background;
-
+extern long int TEXTURE_COUNT;
+extern float TARGET_FPS;
 
 //Declaration of functions.
 SDL_Surface* Load_Surface(const char* PATH);
 SDL_Texture* Load_Texture(const char* PATH);
-
 void ManageGraphics();
-
-extern long int TEXTURE_COUNT;
-
-
-
-
-
 GBFS Is_On_Screen(SDL_Rect test);
-
 T_Bind* Assign_Texture(T_Bind* p_reuse, char* PATH);
 void Destroy_Check_Texture(T_Bind* p_check);
-
 void Position_Screen(Box* center);
