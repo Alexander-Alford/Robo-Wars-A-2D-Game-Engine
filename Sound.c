@@ -5,10 +5,7 @@ typedef struct
 {
 Mix_Chunk* p_sound;
 GBFS flg; //a = 
-unsigned int num_playing_sound;
-int channel;
-int repeat;
-int volume;
+unsigned int num_of_sounds;
 unsigned int pnts_to_chnk;	
 char* Name;
 } S_Bind;
@@ -66,8 +63,8 @@ void Check_Destroy_Sound(S_Bind* p_check)
 	
 		if(p_check->pnts_to_chnk < 1)
 		{
-			if(p_check->num_playing_sound != 0)
-			{
+			//if(p_check->num_playing_sound != 0)
+			//{
 			printf("Error! Attempt to destroy sound that is playing! \n");	
 			}
 			else
@@ -79,7 +76,7 @@ void Check_Destroy_Sound(S_Bind* p_check)
 			p_check->Name = NULL;
 			free(p_check);	
 			p_check = NULL;
-			}
+			//}
 		}	
 	}
 	else

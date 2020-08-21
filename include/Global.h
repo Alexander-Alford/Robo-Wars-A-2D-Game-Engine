@@ -52,6 +52,7 @@ void DPS_reallocate(DPS* p_target, unsigned int new_num);
 void Destroy_DPS(DPS* p_target);
 int DPS_Add_Member(DPS* target, void* addition, unsigned int possible_expansion);
 int DPS_Remove_Member(DPS* holder, unsigned int index_tbr);
+int Tick(int *tick_holder, int tick_num, int tick_cap, char cap_reset, int holder_reset_val);
 void FrameControl(); 
 
 //Defined in main.c

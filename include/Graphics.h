@@ -16,6 +16,8 @@ SDL_Texture* SCREEN_TEXTURE;
 T_Bind* Background;
 extern long int TEXTURE_COUNT;
 extern float TARGET_FPS;
+extern float AVERAGE_FPS;
+extern unsigned int FRAMES_ELAPSED;
 
 //Declaration of functions.
 SDL_Surface* Load_Surface(const char* PATH);

@@ -10,7 +10,8 @@
 int WINDOW_WIDTH = 768;
 int WINDOW_HEIGHT = 768;
 float TARGET_FPS = 60.000;
-
+float AVERAGE_FPS = 0;
+unsigned int FRAMES_ELAPSED = 0;
 
 
 SDL_Rect SCREEN = {0, 0, 256, 256};
@@ -263,4 +264,7 @@ void ManageGraphics()
 	//Update screen renderer.
 	SDL_RenderPresent(RENDERER);
 	
+	FRAMES_ELAPSED++;
+	AVERAGE_FPS = (FRAMES_ELAPSED / (SDL_GetTicks()/1000.f));
+	printf("%f \n", AVERAGE_FPS);
 }

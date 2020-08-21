@@ -1407,3 +1407,40 @@ return x_ret;
 }
 	
 	
+////////////////////////////////////////////////Enemy.c/////////////////////////////////////////////////////////////////////
+	self->iv[0] = 0;
+	self->iv[1] = 0;
+
+	self->iv[0] = self->special[0];
+	self->iv[1] = self->special[1];
+
+	self->iv[2] += self->special[2];
+	self->iv[3] += self->special[3];
+
+
+	if(self->iv[2] > 100 ) //Increment x_buffer, decrease x_sub_buffer.
+	{
+		self->iv[2] -= 100;
+		self->iv[0]++;
+	}
+	else if(self->iv[2] < -100)
+	{
+		self->iv[2] += 100;
+		self->iv[0]--;
+	}
+	
+	if(self->iv[3] > 100 ) //Increment y_buffer, decrease y_sub_buffer.
+	{
+		self->iv[3] -= 100;
+		self->iv[1]++;		
+	}
+	else if(self->iv[3] < -100)
+	{
+		self->iv[3] += 100;
+		self->iv[1]--;
+	}
+
+
+	
+	
+	

@@ -40,6 +40,7 @@ ManageGraphics();
 	
 ControlSounds();	
 
+//SDL_Delay(14);
 FrameControl();	
 }
 	

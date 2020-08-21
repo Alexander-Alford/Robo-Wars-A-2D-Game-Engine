@@ -25,7 +25,8 @@ Middle-->|
 0 = player master state 	left,right,middle; should be used to reduce code redundancy
 1 = x velocity sub pixels
 2 = y velocity sub pixels
-3 = walk speed
+3 = walk speed 
+12 = walk tick
 4 = slide speed
 5 = slide timer
 6 = gravity counter
@@ -52,7 +53,7 @@ h =
 
 void Decide_Player_State(idat* self)
 {
-	//Set flags first.
+	//Set flags.
 	if(self->cb[0].col.c == 1) //hit ground.
 	{
 		self->fl[0].b = 0;
@@ -69,10 +70,9 @@ void Decide_Player_State(idat* self)
 	{
 		self->fl[0].d = 1;
 		self->cb[0].vb.y_vel = 0; //Reset y velocity.
-		//printf("bonk!\n");
 	}
 	
-	if(self->cb[0].vb.y_vel >= 0)
+	if(self->cb[0].vb.y_vel >= 0) //End of jump.
 	{
 	self->fl[0].d = 1;
 	}
@@ -99,20 +99,18 @@ void Decide_Player_State(idat* self)
 	}
 	else
 	{
-	self->cb[0].vb.x_vel = 0;	
+	self->cb[0].vb.x_vel = 0;
+	
 	}
 	
 	
 	
 	
 	if(self->fl[0].b == 1) //If in air.
-	{
-		self->iv[6] += self->iv[7]; //Tick gravity.
-			
-			if(self->iv[6] >= self->iv[8]) //Gravity counter reset.
+	{			
+			if(self->cb[0].vb.y_vel < self->iv[9]) //Gravity ticks if not past max y_val.
 			{
-				self->cb[0].vb.y_vel++;
-				self->iv[6] -= self->iv[8];	
+				self->cb[0].vb.y_vel += Tick(&self->iv[6], self->iv[7], self->iv[8], 'N', 0);				
 			}
 			
 		if(self->fl[0].d == 0) //Early jump end.
@@ -123,11 +121,7 @@ void Decide_Player_State(idat* self)
 			self->fl[0].d = 1;	
 			}
 		}			
-			
-		if(self->iv[9] < self->cb[0].vb.y_vel) //Cap fall speed.
-		{
-			self->cb[0].vb.y_vel = self->iv[9];
-		}			
+						
 			
 	}
 	else //If grounded.
@@ -154,40 +148,41 @@ self->tb[0].dest.y = self->cb[0].vb.box.y - 1;
 		{
 		self->iv[11]++;
 	
-			for(register int I = 0; I < (self->iv[11]/7); I++)
+		int TEST = (self->iv[11]/12);
+	
+			for(register int I = 0; I < TEST; I++)
 			{
 			self->tb[0].src.x = self->tb[0].src.w*(I + 1);
 			}	
 		
 			//Very messy, poorly fumctional.
-			if((self->iv[11]/7) > 3)
+			if(TEST > 3)
 			{
 			self->iv[11] = 0;	
 			}
-			else if((self->iv[11]/7) == 1)
+			else if(TEST == 1)
 			{
 			self->tb[0].dest.x -= 2;	
 			}		
-			else if((self->iv[11]/7) == 2)
+			else if(TEST == 2)
 			{
 			self->tb[0].dest.x -= 2;	
 			}
-			else if((self->iv[11]/7) == 3)
+			else if(TEST == 3)
 			{
 			self->tb[0].dest.x -= 2;		
 			}	
 		}
 
-		
-	//	printf("%d %d\n" ,self->iv[11], self->tb[0].src.x);								
+						
 	}
-	else
+	else //Default standing sprite.
 	{
 		self->iv[11] = 0;
 		self->tb[0].src.x = 0;
 	}
 
-	if(self->fl[0].b == 1) //in air
+	if(self->fl[0].b == 1) //in air sprite
 	{
 	self->tb[0].src.x = self->tb[0].src.w*5;	
 	}

@@ -346,13 +346,7 @@ void ReadMapData(const char* PATH, DPS* o_dps, unsigned int level_id)
 					
 					for(unsigned register int S = 0; S < 10; S++)
 					{
-						fscanf(p_LEVEL_FILE, "%d", &special_buff[S]);
-						
-						if(special_buff[S] == -1)
-						{
-						special_buff[S] = 0;
-						break;
-						}
+						fscanf(p_LEVEL_FILE, "%d", &special_buff[S]);										
 					}													
 					
 				Create_Object_Instance(obj_address, x_y, special_buff);	//Creates the instance.			
