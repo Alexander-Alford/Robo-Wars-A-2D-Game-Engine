@@ -336,7 +336,7 @@ void ReadMapData(const char* PATH, DPS* o_dps, unsigned int level_id)
 		{
 			fscanf(p_LEVEL_FILE, "%d", &object_ID);
 			
-			obj_address = Load_Object("Assets/O_data", OBJECT_P_ARRAY, object_ID);					
+			obj_address = Load_Object("Assets/o_data", OBJECT_P_ARRAY, object_ID);					
 			
 			fscanf(p_LEVEL_FILE, "%d", &instances);
 

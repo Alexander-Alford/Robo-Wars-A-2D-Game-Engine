@@ -1,16 +1,16 @@
 #include <Global.h>
-#include <string.h>
+//#include <string.h>
 
 typedef struct
 {
-Mix_Chunk* p_sound;
+Mix_Chunk** p_sounds;
 GBFS flg; //a = 
 unsigned int num_of_sounds;
-unsigned int pnts_to_chnk;	
-char* Name;
+unsigned int pnts_to_sbank;	
+unsigned int ID;	//Bank ID. 
 } S_Bind;
 
-S_Bind* TO_PLAY_QUEUE[100] = {NULL};
+Mix_Chunk* TO_PLAY_QUEUE[100] = {NULL};
 
 
 long int SOUND_COUNT = 0;
@@ -18,65 +18,114 @@ long int SOUND_COUNT = 0;
 Mix_Music* BackgroundMusic = NULL;
 
 
-//Function analogous to Assigm_texture and Check_Destroy_Texture.
-S_Bind* Assign_Sound(S_Bind* reuse, char* PATH)
+S_Bind* Load_Sounds(const char* PATH, unsigned int bank_id)
+{
+	S_Bind* new = malloc(sizeof(S_Bind));
+	
+	if(!new)
+	{
+	printf("Error loading sounds!\n");	
+	return NULL;
+	}
+	
+	FILE* p_s_bank = NULL;
+	p_s_bank = fopen(PATH, "r");
+	
+	if(!p_s_bank)
+	{
+	printf("Error attempting to open \"%s\" for sounds!\n", PATH);
+	return NULL;	
+	}
+	
+	char char_buff = 'Z';
+	unsigned int num_buff = 0;
+	char sound_path_buff[100] = {0};
+	
+		while(fscanf(p_s_bank, "%c", &char_buff) != EOF)
+		{
+			if(char_buff == '@')
+			{
+			fscanf(p_s_bank, "%u", &num_buff);
+			
+				if(bank_id == num_buff)
+				{
+				new->ID = bank_id;
+			
+				fscanf(p_s_bank, "%u", &num_buff);	
+				new->num_of_sounds = num_buff;
+				
+				new->p_sounds = malloc(num_buff * sizeof(Mix_Chunk));
+					
+					for(register unsigned int i = 0; i < num_buff; i++)
+					{
+						fscanf(p_s_bank, "%100s", &sound_path_buff);
+					
+						new->p_sounds[i] = Mix_LoadWAV(&sound_path_buff[i]);
+				
+						if(!new->p_sounds[i])
+						{
+						printf("Error assigning sound! \n");	
+						}
+						else
+						{
+						SOUND_COUNT++;							
+						}
+					}
+				
+				printf("%u sfx were allocated. \n", new->num_of_sounds);
+				new->pnts_to_sbank = 1;
+				
+				fclose(p_s_bank);
+				return new;
+				}
+			}
+		}
+	
+	printf("Error! Could not find desired sound bank!\n");
+	free(new);
+	fclose(p_s_bank);
+	return NULL;
+}
+
+//Function analogous to Assigm_texture and Check_Destroy_Texture. Acts as a wrapper for sfx loading.
+S_Bind* Assign_Sound_Bank(S_Bind* reuse, const char* s_bank_PATH, unsigned int ID_buf)
 {
 	if(reuse == NULL)
 	{
-		S_Bind* p_new = malloc(sizeof(S_Bind));
+		
+	S_Bind* new_sb = Load_Sounds(s_bank_PATH, ID_buf);						
 			
-			if(p_new != NULL)
-			{	
-			p_new->p_sound = Mix_LoadWAV(PATH);
-				
-				if(p_new->p_sound == NULL)
-				{
-				printf("Error assigning sound! \n");	
-				free(p_new);
-				return NULL;
-				}	
-
-			p_new->pnts_to_chnk = 1;
-			SOUND_COUNT++;
-			unsigned int namebuffer = (strlen(PATH)+1);
-			p_new->Name = malloc((namebuffer)*(sizeof(char)));
-			strcpy(p_new->Name, PATH);
-			p_new->Name[(namebuffer - 1)] = '\0';
+	printf("Sound bank #%u assigned. \n", new_sb->ID);
 			
-			printf("Sound \"%s\" assigned. \n", p_new->Name);
-			}
-	return p_new;
+	return new_sb;
 	}
 	
 	else
 	{
-	reuse->pnts_to_chnk++;
+	reuse->pnts_to_sbank++;
 	return reuse;
 	}
 }
 
-void Check_Destroy_Sound(S_Bind* p_check)
+void Check_Destroy_Sbank(S_Bind* p_check)
 {
 	if(p_check != NULL)
 	{
-	p_check->pnts_to_chnk--;
+	p_check->pnts_to_sbank--;
 	
-		if(p_check->pnts_to_chnk < 1)
+		if(p_check->pnts_to_sbank < 1)
 		{
-			//if(p_check->num_playing_sound != 0)
-			//{
-			printf("Error! Attempt to destroy sound that is playing! \n");	
-			}
-			else
-			{
-			Mix_FreeChunk(p_check->p_sound);	
-			SOUND_COUNT--;
-			printf("	%s sound destroyed. \n", p_check->Name);
-			free(p_check->Name);
-			p_check->Name = NULL;
-			free(p_check);	
-			p_check = NULL;
-			//}
+	
+			for(unsigned register int i = 0; i < p_check->num_of_sounds; i++) //First PATH is name of bank.
+			{				
+					free(p_check->p_sounds[i]);						
+					SOUND_COUNT--;											
+			}	
+			
+			printf("%u sfx were deallocated. \n", p_check->num_of_sounds);
+			printf("	%d sound bank #%u destroyed. \n", p_check->ID);
+
+			free(p_check);			
 		}	
 	}
 	else
@@ -85,7 +134,7 @@ void Check_Destroy_Sound(S_Bind* p_check)
 	}
 }
 
-void Add_Sound_To_Play_Queue(S_Bind* addition)
+int Add_Sound_To_Play_Queue(Mix_Chunk* addition)
 {
 	if(addition)
 	{
@@ -94,7 +143,7 @@ void Add_Sound_To_Play_Queue(S_Bind* addition)
 			if(!TO_PLAY_QUEUE[i])
 			{
 			TO_PLAY_QUEUE[i] = addition;
-			return;			
+			return i;			
 			}
 		}
 	
@@ -103,6 +152,7 @@ void Add_Sound_To_Play_Queue(S_Bind* addition)
 	else
 	{
 	printf("Error attempting to add sound to que! \n");	
+	return -1;
 	}
 }
 
@@ -135,7 +185,7 @@ void Play_Sounds()
 	{
 		if(TO_PLAY_QUEUE[i])
 		{
-			Mix_PlayChannel(-1, TO_PLAY_QUEUE[i]->p_sound, 0);
+			Mix_PlayChannel(-1, TO_PLAY_QUEUE[i], 0);
 			TO_PLAY_QUEUE[i] = NULL;
 		}
 	}

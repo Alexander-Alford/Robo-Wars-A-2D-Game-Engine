@@ -60,6 +60,7 @@ void Decide_Player_State(idat* self)
 		self->fl[0].d = 1;
 		self->cb[0].vb.y_vel = 1; //Temporary fix.
 		self->iv[6] = 0; //reset gravity counter.
+		self->cb[0].vb.box.h = 22;
 	}
 	else
 	{
@@ -126,9 +127,10 @@ void Decide_Player_State(idat* self)
 	}
 	else //If grounded.
 	{
-		if(F_KeyState[X] == PRESSED) //Jump.
+		if(F_KeyState[X] == PRESSED) //Enter jump.
 		{
 			self->cb[0].vb.y_vel = -self->iv[10];
+			self->cb[0].vb.box.h = 18;
 			self->fl[0].b = 1;
 			self->fl[0].d = 0;	
 		}
@@ -148,7 +150,7 @@ self->tb[0].dest.y = self->cb[0].vb.box.y - 1;
 		{
 		self->iv[11]++;
 	
-		int TEST = (self->iv[11]/12);
+		int TEST = (self->iv[11]/10) + 1;
 	
 			for(register int I = 0; I < TEST; I++)
 			{
@@ -185,6 +187,7 @@ self->tb[0].dest.y = self->cb[0].vb.box.y - 1;
 	if(self->fl[0].b == 1) //in air sprite
 	{
 	self->tb[0].src.x = self->tb[0].src.w*5;	
+	self->iv[11] = 0;
 	}
 
 

@@ -105,7 +105,7 @@ typedef struct
 //Shared Resources. Pointers may be shared with several other objects. If so, do not deallocate resources until no object is using them.
 	unsigned int size[5]; //The number of GBFS, hb containers, cb containers, tb containers, and integer members in an instance.
 	
-//	void* p_S; //Sound resource, S_bind. 
+	void* p_S; //Sound resource, S_bind. 
 	void* p_T; //Texture resource, T_bind. 
 	
 
@@ -246,6 +246,37 @@ printf("Could not find %d object ID in array. \n", ID);
 return NULL;	
 }
 
+void Prepare_Object_S_Bind(unsigned int target_ID, Object* obj, const char* PATH, DPS* obj_arr)
+{
+	
+	
+	register int I = 0;
+	register int N = 0;
+	
+	while(I < obj_arr->size && N <= obj_arr->non_null) //Loop checks to see if texture already exists.
+	{
+		
+		if(obj_arr->Array[I] != NULL)
+		{
+		
+			if( ((Object*)obj_arr->Array[I])->p_S != NULL && ((S_Bind*)((Object*)obj_arr->Array[I])->p_S)->ID == target_ID)
+			{
+			obj->p_S = Assign_Sound_Bank(((Object*)obj_arr->Array[I])->p_S, "Assets/s_bank", target_ID);
+			return;	
+			}
+		
+		N++;	
+		}	
+		
+	I++;
+	}	
+	
+printf("	A new sound bank was allocated...\n");	
+obj->p_S = Assign_Sound_Bank(NULL, PATH, target_ID);
+
+return;			
+}
+
 //Prepares an objects T_Bind.
 void Prepare_Object_T_Bind(char* PATH, Object* obj, DPS* obj_arr)
 {
@@ -259,7 +290,7 @@ void Prepare_Object_T_Bind(char* PATH, Object* obj, DPS* obj_arr)
 	register int I = 0;
 	register int N = 0;
 	
-	while(I < obj_arr->size && N < obj_arr->non_null) //Loop checks to see if texture already exists.
+	while(I < obj_arr->size && N <= obj_arr->non_null) //Loop checks to see if texture already exists.
 	{
 		
 		if(obj_arr->Array[I] != NULL)
@@ -284,7 +315,7 @@ return;
 }
 
 //Initiates object structure members to 0 and null. Returns object pointer.
-Object* Create_Object(DPS* o_Dps, unsigned int ID, unsigned int inst_size[5], char* T_PATH, idat* ref_data, unsigned int run_code, unsigned int start_inst_num)
+Object* Create_Object(DPS* o_Dps, unsigned int ID, unsigned int inst_size[5], char* T_PATH, unsigned int sbank_id, idat* ref_data, unsigned int run_code, unsigned int start_inst_num)
 {
 	
 	Object* p_new = malloc(sizeof(Object));
@@ -299,6 +330,7 @@ Object* Create_Object(DPS* o_Dps, unsigned int ID, unsigned int inst_size[5], ch
 	p_new->ID = ID;	
 	p_new->index = DPS_Add_Member(o_Dps, p_new, 10);
 
+	p_new->p_S = NULL;
 	p_new->p_T = NULL;
 	p_new->func = NULL;
 	p_new->dps_ins = NULL;
@@ -319,7 +351,7 @@ Object* Create_Object(DPS* o_Dps, unsigned int ID, unsigned int inst_size[5], ch
 		
 		else //Sets object shared resources.
 		{
-		//Prepare_Object_S_Bind(); 
+		Prepare_Object_S_Bind(sbank_id, p_new, "Assets/s_bank", o_Dps); 
 		Prepare_Object_T_Bind(T_PATH, p_new, o_Dps);
 
 		p_new->refer.fl = ref_data->fl;
@@ -357,9 +389,9 @@ Object* Load_Object(const char* PATH, DPS* o_Arr, unsigned int ID)
 	if (!p_O_data)
 	{
 	printf("Failed to open object file. \n");
+	return NULL;
 	}	
-	else
-	{
+	
 		
 	char pound_check = 'A';
 	unsigned int ID_buff = 0;
@@ -367,7 +399,7 @@ Object* Load_Object(const char* PATH, DPS* o_Arr, unsigned int ID)
 	unsigned int start_inst = 0;
 	unsigned int int_buffer[5] = {0}; 
 	unsigned int flag_buffer[8] = {0};
-	//char* S_PATH = NULL;
+	unsigned int s_bank_ID = 0;
 	char T_PATH[100] = {0};
 	idat ref_copy = {NULL,NULL,NULL,NULL,NULL,{0}};
 	unsigned int RC_ID = 0; //run code
@@ -385,7 +417,12 @@ Object* Load_Object(const char* PATH, DPS* o_Arr, unsigned int ID)
 					{
 					fscanf(p_O_data, "%u", &RC_ID);
 					fscanf(p_O_data, "%u %u", &int_buffer[0], &int_buffer[1]);
-											
+							
+						if(int_buffer[0] > 0)
+						{
+						fscanf(p_O_data, "%u", &s_bank_ID);	
+						}
+							
 						if(int_buffer[1] > 0)
 						{
 						fscanf(p_O_data, "%100s", &T_PATH);	
@@ -479,7 +516,7 @@ Object* Load_Object(const char* PATH, DPS* o_Arr, unsigned int ID)
 					
 						fclose(p_O_data);
 
-						return Create_Object(OBJECT_P_ARRAY, ID, int_buffer, T_PATH, &ref_copy, RC_ID, start_inst);
+						return Create_Object(OBJECT_P_ARRAY, ID, int_buffer, T_PATH, s_bank_ID, &ref_copy, RC_ID, start_inst);
 					}
 					else
 					{
@@ -491,7 +528,7 @@ Object* Load_Object(const char* PATH, DPS* o_Arr, unsigned int ID)
 	printf("Error! could not find object. \n", ID);	
 	fclose(p_O_data);
 	return NULL;
-	}	
+		
 }
 
 
@@ -507,6 +544,11 @@ void Destroy_Object(DPS* holder, Object* p_obj)
 		if(p_obj->p_T != NULL)
 		{
 		Destroy_Check_Texture(p_obj->p_T);	
+		}
+		
+		if(p_obj->p_S != NULL)
+		{
+		Check_Destroy_Sbank(p_obj->p_S);
 		}
 
 			free(p_obj->refer.fl);

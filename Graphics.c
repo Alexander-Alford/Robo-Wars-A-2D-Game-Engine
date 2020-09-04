@@ -266,5 +266,5 @@ void ManageGraphics()
 	
 	FRAMES_ELAPSED++;
 	AVERAGE_FPS = (FRAMES_ELAPSED / (SDL_GetTicks()/1000.f));
-	printf("%f \n", AVERAGE_FPS);
+	//printf("%f \n", AVERAGE_FPS);
 }

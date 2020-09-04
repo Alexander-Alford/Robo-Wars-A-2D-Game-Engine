@@ -33,7 +33,7 @@ void Start_Window()
 		}
 
 	//Creates a renderer for the window with parameters for which window, the driver index, and the rendering flags.
-	RENDERER = SDL_CreateRenderer(WINDOW, -1, SDL_RENDERER_ACCELERATED );
+	RENDERER = SDL_CreateRenderer(WINDOW, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (RENDERER == NULL)
 		{
 		printf("Renderer could not be created! SDL_image Error: %s\n", IMG_GetError());
