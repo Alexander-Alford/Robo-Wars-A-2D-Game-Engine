@@ -2,7 +2,7 @@
 #include <Object.h>
 #include <C_and_R.h>
 #include <Graphics.h>
-
+#include <Sound.h>
 
 
 
@@ -27,12 +27,14 @@ void Bouncer_Run(idat* self)
 	self->special[1] = -self->special[1];
 	self->special[3] = -self->special[3];
 	self->iv[1] = -self->iv[1];
+	Add_Sound_To_Play_Queue( ((S_Bind*)((Object*)self->parent_o)->p_S)->p_sounds[0]);
 	}
 	if(self->cb[0].col.a == 1 || self->cb[0].col.b == 1) //Horizontal reversal.
 	{
 	self->special[0] = -self->special[0];
 	self->special[2] = -self->special[2];
 	self->iv[0] = -self->iv[0];
+	Add_Sound_To_Play_Queue( ((S_Bind*)((Object*)self->parent_o)->p_S)->p_sounds[0]);
 	}
 	
 	

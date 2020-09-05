@@ -15,7 +15,7 @@ Middle-->|
 #include <Object.h>
 #include <C_and_R.h>
 #include <Graphics.h>
-
+#include <Sound.h>
 
 
 
@@ -133,6 +133,7 @@ void Decide_Player_State(idat* self)
 			self->cb[0].vb.box.h = 18;
 			self->fl[0].b = 1;
 			self->fl[0].d = 0;	
+			Add_Sound_To_Play_Queue( ((S_Bind*)((Object*)self->parent_o)->p_S)->p_sounds[1]);
 		}
 	}
 	

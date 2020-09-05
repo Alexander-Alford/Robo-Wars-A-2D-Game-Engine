@@ -54,17 +54,18 @@ S_Bind* Load_Sounds(const char* PATH, unsigned int bank_id)
 				fscanf(p_s_bank, "%u", &num_buff);	
 				new->num_of_sounds = num_buff;
 				
-				new->p_sounds = malloc(num_buff * sizeof(Mix_Chunk));
+				
+				new->p_sounds = malloc(num_buff * sizeof(Mix_Chunk*));
 					
 					for(register unsigned int i = 0; i < num_buff; i++)
 					{
-						fscanf(p_s_bank, "%100s", &sound_path_buff);
-					
-						new->p_sounds[i] = Mix_LoadWAV(&sound_path_buff[i]);
+						fscanf(p_s_bank, "%100s", sound_path_buff);
+								
+						new->p_sounds[i] = Mix_LoadWAV(sound_path_buff);
 				
 						if(!new->p_sounds[i])
 						{
-						printf("Error assigning sound! \n");	
+						printf("Error assigning sound! %s \n", SDL_GetError());	
 						}
 						else
 						{
@@ -72,7 +73,7 @@ S_Bind* Load_Sounds(const char* PATH, unsigned int bank_id)
 						}
 					}
 				
-				printf("%u sfx were allocated. \n", new->num_of_sounds);
+				printf("	%u sfx were allocated. \n", new->num_of_sounds);
 				new->pnts_to_sbank = 1;
 				
 				fclose(p_s_bank);
@@ -82,6 +83,7 @@ S_Bind* Load_Sounds(const char* PATH, unsigned int bank_id)
 		}
 	
 	printf("Error! Could not find desired sound bank!\n");
+	free(new->p_sounds);
 	free(new);
 	fclose(p_s_bank);
 	return NULL;
@@ -123,8 +125,8 @@ void Check_Destroy_Sbank(S_Bind* p_check)
 			}	
 			
 			printf("%u sfx were deallocated. \n", p_check->num_of_sounds);
-			printf("	%d sound bank #%u destroyed. \n", p_check->ID);
-
+			printf("	sound bank #%u destroyed. \n", p_check->ID);
+			free(p_check->p_sounds);
 			free(p_check);			
 		}	
 	}

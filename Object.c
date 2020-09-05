@@ -93,6 +93,7 @@ CB_con* cb;
 TB_con* tb;
 int* iv;
 long int special[10];	//Solution to creation values problem. Defaults to 0 for every value.	
+void* parent_o;
 } idat;
 
 //Add render instructions.(render/no render, simple/ex, use vbox as dest/use sdl rect, no source rect, if ex rotate?, if ex flip?)
@@ -199,6 +200,8 @@ void Create_Object_Instance(Object* parent, int x_y[2], long int special_buff[10
 	{
 	p_new->special[S] = special_buff[S];
 	}
+	
+	p_new->parent_o = parent;
 	
 	printf("	Instance of Object %d created: x=%d, y=%d, with special |%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|.\n", parent->ID, p_new->cb[0].vb.box.x, p_new->cb[0].vb.box.y, p_new->special[0], p_new->special[1], p_new->special[2], p_new->special[3], p_new->special[4], p_new->special[5], p_new->special[6], p_new->special[7], p_new->special[8], p_new->special[9]);
 

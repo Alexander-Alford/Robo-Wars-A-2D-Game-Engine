@@ -34,7 +34,8 @@ HB_con* hb;
 CB_con* cb;
 TB_con* tb;
 int* iv;
-long int special[10];	
+long int special[10];
+void* parent_o;	
 } idat;
 
 

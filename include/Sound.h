@@ -16,7 +16,7 @@ extern long int SOUND_COUNT;
 S_Bind* TO_PLAY_QUEUE[100];
 
 void Load_Music(const char* PATH);
-void Add_Sound_To_Play_Queue(S_Bind* addition);
+int Add_Sound_To_Play_Queue(Mix_Chunk* addition);
 S_Bind* Assign_Sound_Bank(S_Bind* reuse, const char* s_bank_PATH, unsigned int ID_buf);
 void Check_Destroy_Sbank(S_Bind* p_check);
 void ControlSounds();

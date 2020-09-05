@@ -74,7 +74,7 @@ void Start_Window()
 
 void Terminate()
 {
-	printf("Program termination beginning... \n");
+	printf("\nProgram termination beginning... \n");
 
 //Test Area------------------------
 
