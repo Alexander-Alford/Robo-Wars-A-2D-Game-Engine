@@ -5,10 +5,11 @@
 #define OBJECT_H
 
 
-typedef struct
+typedef struct 
 {
-GBFS flg; //Check coll? 	
+GBFS flg; 
 unsigned int ret_val;
+unsigned int give_val;
 Box bo;	
 } HB_con;
 
@@ -58,6 +59,8 @@ typedef struct
 
 extern unsigned long int OBJECT_COUNT;
 extern unsigned long int OBJECT_ARRAY_SIZE;
+extern unsigned int PLAYER_OBJECT_ID;
+unsigned int PLAYER_OBJECT_INDEX;	
 
 extern DPS* OBJECT_P_ARRAY;
 

@@ -63,11 +63,12 @@ Assets/Player.png 	//Texture resource
 
 
 
-typedef struct //Hit box container.
+typedef struct //Hit box container. //An objects projectiles are part of the hitboxes.
 {
-GBFS flg; //Check coll? Flip other boxes' collision checking?	
-unsigned int ret_val;
-Box bo;	//Hit box coordinates are relative to CB[0].
+GBFS flg; //Check coll? Coll with player? 
+unsigned int ret_val;	//Value to be taken.
+unsigned int give_val;	//Value to be given.
+Box bo;	
 } HB_con;
 
 typedef struct //Collision box container.
@@ -93,7 +94,7 @@ CB_con* cb;
 TB_con* tb;
 int* iv;
 long int special[10];	//Solution to creation values problem. Defaults to 0 for every value.	
-void* parent_o;
+void* parent_o;	//Neccessary because of sloppy sfx implementation.
 } idat;
 
 //Add render instructions.(render/no render, simple/ex, use vbox as dest/use sdl rect, no source rect, if ex rotate?, if ex flip?)
@@ -120,6 +121,8 @@ typedef struct
 
 unsigned long int OBJECT_COUNT = 0; //Total number of loaded/active objects.
 unsigned long int OBJECT_ARRAY_SIZE = 0; //Total number of pointers in object array. 
+unsigned int PLAYER_OBJECT_ID = 1;	//The player objects id and index.
+unsigned int PLAYER_OBJECT_INDEX = 0;	
 
 DPS* OBJECT_P_ARRAY = NULL;
 
@@ -640,7 +643,30 @@ void Run_Object_Function(Object* obj, idat* ida)
 	obj->func(ida);
 }
 
-void Object_Update(DPS* dps_o, void (*func)(Object*, idat*))
+
+
+/*
+void HB_Collisions_With_Player(DPS* dps_o)
+{
+	if(dps_o && dps_o->Array)
+	{
+		if(dps_o->Array[PLAYER_OBJECT_INDEX])
+		{	
+			for(unsigned register int i = 0; i < ((Object*)dps_o->Array[PLAYER_OBJECT_INDEX])->sizes[1]; i++)
+			{
+				if(((Object*)dps_o->Array[PLAYER_OBJECT_INDEX])->)
+				{
+					
+				}
+			}
+		}
+	}
+}
+*/
+
+
+
+void Object_Update(DPS* dps_o, void (*func)(Object*, idat*))	//Higly reusable function that iterates on every object's instance.
 {
 	
 	if(dps_o != NULL)
@@ -679,6 +705,7 @@ void UpdateObjects()
 
 	Object_Update(OBJECT_P_ARRAY, &Move_All_VBoxes);
 	Object_Update(OBJECT_P_ARRAY, &Resolve_Tile_Collisions);
+	//Object_Update(OBJECT_P_ARRAY, );
 	//Check collisions with projectiles/enemies/others.	
 	Object_Update(OBJECT_P_ARRAY, &Run_Object_Function);
 		
