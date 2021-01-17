@@ -10,7 +10,7 @@ CC = gcc
 INCLUDE_PATHS = -IC:\PROG\include\SDL2 -IC:.\$(INC_DIR)
 LIBRARY_PATHS = -LC:\PROG\lib\SDL2
 COMPILER_FLAGS = 
-LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer
+LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer 
 
 
 
