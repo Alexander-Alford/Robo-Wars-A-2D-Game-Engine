@@ -15,31 +15,26 @@
 
 
 //This function creates the SDL Window that the game will be using.
-void Start_Window()
-{
+void StartProgram(){
 	printf("	Initialize SDL systems and subsystems... \n");
 	
-	//Initialize SDL video and audio.
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 		{ 
 		printf("SDL failed to initialize! SDL_Error: %s\n", SDL_GetError());		
 		}
 	
-	//Create the window with the following arguments: caption, x-position, y-position, width, height, creation flags. This function returns NULL in case of an error.
 	WINDOW = SDL_CreateWindow("Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 	if (WINDOW == NULL)
 		{ 
 		printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 		}
 
-	//Creates a renderer for the window with parameters for which window, the driver index, and the rendering flags.
 	RENDERER = SDL_CreateRenderer(WINDOW, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (RENDERER == NULL)
 		{
 		printf("Renderer could not be created! SDL_image Error: %s\n", IMG_GetError());
 		}
 	
-	//Initializes SDL_Mixer.
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
 		{
 		printf("SDL mixer failed to initialize! SDL_mixer Error: %s \n", Mix_GetError());	
@@ -61,19 +56,9 @@ void Start_Window()
 	//Screen texture that will be rendered to window.
 	SCREEN_TEXTURE = SDL_CreateTexture(RENDERER, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN.w, SCREEN.h);
 	
-//Test code.-----------------------------------------------------------
-
-
-	OBJECT_P_ARRAY = Create_DPS(2);
-	
-	ReadMapData("Assets/Level_Tile", OBJECT_P_ARRAY, 1); //Reads the map data. Physical, graphical, and object.
-
-
-
 }
 
-void Terminate()
-{
+void TerminateProgram(){
 	printf("\nProgram termination beginning... \n");
 
 //Test Area------------------------
