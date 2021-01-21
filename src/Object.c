@@ -1,55 +1,5 @@
 /*
-To handle objects, a strong ditinction must be made between types of objects and instances of object. A given type of an object will
-share texture, sounds, run code, and other non-changing aspects of the object. Individual instances of an object must be able to maintain their
-own personal data independent of all other instances. These instances will be linked to eachother in a chain, tethered to the object itself.
 
-Type Properties:
--ID
--Source texture
--Sound chunks
--Constant data values
--run code
-
-Instance Properties:
--Position/velocity
--unshared graphical data/flags
--unshared sound data
--personal data
-
-
-
------------------Reference Object Data--------------------------------
-#1 					//object id
-1 					//run code
-0 1 				//sound and texture flags
-Assets/Player.png 	//Texture resource
-1 1 1 1 6 			//GBFS, hb containers, cb containers, tb containers, and integer members. Should be atleast 1 collision box.
-
-1 1 1 1 1 0 0 0 	//Default GBFS
-
-0 0 0 0 0 0 0 0		//Default hb containers					
-1					//Return value of hitbox
-0 0 16 24			//hitbox data, to be used as offsets from primary cb box
-
-1 1 0 0 0 0 0 0 	//Default cb containers	
-0 0 16 24 0 0		//Collision flags default to 0
-
-1 0 0 0 0 0 0 0 	//Default tb containers
-0 0 16 24
-0 0 20 40
-0					//no flip, v_flip, h_flip, both
-
-0 0 3 5 5 0 		//integer members
-
------------------Reference Map Instance Declaration----------------------------
-
-1				//# of object types in map
-
-0001			//first listed object id
-1 				//# of instances of object
-
-120 100 	-1	//x_y position of instance no change, skip
--------------------------------------------------------------------------------
 */
 
 #include <Global.h>
@@ -63,73 +13,7 @@ Assets/Player.png 	//Texture resource
 
 
 
-typedef struct //Hit box container. //An objects projectiles are part of the hitboxes.
-{
-GBFS flg; //Check coll? Coll with player? 
-unsigned int ret_val;	//Value to be taken.
-unsigned int give_val;	//Value to be given.
-Box bo;	
-} HB_con;
 
-typedef struct //Collision box container.
-{ 
-GBFS flg; //Move when called? collides with tiles? collides with other objects? d,e,f,g,h = extra
-GBFS col; //Collision flags for tile collision resolution. If vb doesn't collide with them can be used for something else.
-VBox vb;
-} CB_con;
-
-typedef struct //Texture bind container.
-{
-GBFS flg; //Render? null source? null dest? defgh = to be decided
-SDL_Rect dest; //should be controlled by object function
-SDL_Rect src;	//^^^^^^^^
-int flip; //^^^^^^^^^^^^^^
-} TB_con;
-
-typedef struct //Instance data.
-{
-GBFS* fl;
-HB_con* hb;	
-CB_con* cb;
-TB_con* tb;
-int* iv;
-long int special[10];	//Solution to creation values problem. Defaults to 0 for every value.	
-void* parent_o;	//Neccessary because of sloppy sfx implementation.
-} idat;
-
-//Add render instructions.(render/no render, simple/ex, use vbox as dest/use sdl rect, no source rect, if ex rotate?, if ex flip?)
-typedef struct
-{
-//Object meta-data. Data about the object structure itself.
-	unsigned long int ID; 
-	unsigned long int index; //Index in object array.
-
-//Shared Resources. Pointers may be shared with several other objects. If so, do not deallocate resources until no object is using them.
-	unsigned int size[5]; //The number of GBFS, hb containers, cb containers, tb containers, and integer members in an instance.
-	
-	void* p_S; //Sound resource, S_bind. 
-	void* p_T; //Texture resource, T_bind. 
-	
-
-	idat refer;	//Reference instance.
-	void (*func)(idat*); //Pointer to a function pointer that takes input from p_data_c and p_data_p.
-
-//Dynamic instance array.
-	DPS* dps_ins; 
-	
-} Object;
-
-unsigned long int OBJECT_COUNT = 0; //Total number of loaded/active objects.
-unsigned long int OBJECT_ARRAY_SIZE = 0; //Total number of pointers in object array. 
-unsigned int PLAYER_OBJECT_ID = 1;	//The player objects id and index.
-unsigned int PLAYER_OBJECT_INDEX = 0;	
-
-DPS* OBJECT_P_ARRAY = NULL;
-
-//These need to be fixed at some point.
-void Decide_Player_State(idat* self);
-void Bouncer_Run(idat* self);
-void Resolve_Tile_Collisions(Object* obj, idat* ida);
 
 
 
