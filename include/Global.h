@@ -10,6 +10,7 @@ Header file for all global variables/objects that will be used by several object
 //Will be used in almost every source file.
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>

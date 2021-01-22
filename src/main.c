@@ -6,10 +6,7 @@ program structure and to offload the majority of the source code into other file
 As a note for the rest of the source code. Any printf() usage is strictly for debugging.
 */
 
-
-
-
-char coreloop_f = 'T'; //move to global?
+char coreloop_f = 'T'; 
 
 /*
 The main function for the program is a simple fixed function pipeline where all of the details are
@@ -24,10 +21,10 @@ printf( "PROGRAM START\n" );
 Start_Window();			
 
 while(coreloop_f != 'F'){
-    TakeInputs();
-    UpdateObjects();
-    ManageGraphics();
-    ControlSounds();	
+    CoreInput();
+    CoreObject();
+    CoreGraphic();
+    CoreSound();	
     FrameControl();	
 }
 	

@@ -230,7 +230,9 @@ void TakeInputs()
 		}
 	}
 	
-		
-	
+	if(F_KeyState[P] == PRESSED)
+	{
+	Dump_Data_To_Console();
+	}
 	
 };

@@ -1,7 +1,6 @@
-/**
-The purpose of this file is to describe all map gridlike structure and functions that will be used in the game.
-This includes basic 2D tiling(both physical and graphical), reading the map data, and more.
-**/
+/*
+The purpose of this file is to host all code related to level loading, tiling, and interactivity.
+*/
 
 #include <Global.h>
 #include <Object.h>
@@ -32,16 +31,13 @@ typedef struct
 
 
 
-//The length and height of a grid tile in pixels.
-int BASE_TILE_SIZE = 16;
-//The dimensions of a map square in grid tiles.
-int BASE_QUADRANT_SIZE = 16;
-//The level ID.
-unsigned int LEVEL_ID = 0;
+int TILE_SIZE = 16;
+int QUADRANT_SIZE = 16;
 
-//Thecurrent map's quadrant size in rows(Horizontal) by columns(Vertical).
-unsigned int LEVEL_SIZE_V = 0;
+unsigned int LEVEL_ID = 0;
 unsigned int LEVEL_SIZE_H = 0;
+unsigned int LEVEL_SIZE_V = 0;
+
 
 unsigned int TOTAL_TILE_TEXTURES = 0;
 unsigned int DEBUG_TILE_INDEX = 0;
@@ -50,19 +46,19 @@ SDL_Texture* TILES_TEXTURE = NULL;
 
 SDL_Rect* TILE_TEXTURE_ARRAY;
 
-Tile* p_PRIMARY_TILE_ARRAY = NULL;
+
+Tile* LEVEL_TILES = NULL;
 //FILE pointer that will allow the map data to be read.
-FILE* p_LEVEL_FILE = NULL;
+FILE* LEVEL_FILE = NULL;
 
 
 
 
 
 
-//Function: Allocates tile array and sets properties to default.
-void Allocate_Tile_Array()
+//Allocates default tile array. Will be merged with map loading function eventually.
+void AllocTiles()
 {
-
 
 	//Allocate an array of tiles.
 	p_PRIMARY_TILE_ARRAY = malloc(TOTAL_TILES * sizeof(Tile));
@@ -88,22 +84,7 @@ void Allocate_Tile_Array()
 		}
 }
 
-//Function for freeing the tile array.
-void Free_Tile_Array()
-{
-	if (p_PRIMARY_TILE_ARRAY == NULL)
-	{
-	printf("Warning! Trying to free unallocated tile array. No tiles will be freed. \n");
-	}
-	
-	else
-	{
-	free(p_PRIMARY_TILE_ARRAY);
-	p_PRIMARY_TILE_ARRAY = NULL;
-		
-	printf("%d tiles have been deallocated. \n", TOTAL_TILES);
-	}
-}
+
 
 //Assigns the tiles' tesxture and rectangle array.
 void Assign_Tile_Texture_Array(const char* PATH)
@@ -186,7 +167,7 @@ void Free_Tile_Texture()
 	printf("Tilesheet texture and array have been destroyed. \n");
 }
 
-/**
+/*
 This function will take a text file with level data in it and read it. First, two hexadecimal values are read and stored as the LEVEL_SIZE
 dimensions as vertical by horizontal quadrants. Next, a loop will read the next BASE_QUADRANT_SIZExLEVEL_SIZE_V number of values and store them 
 in the first horizontal of Tile pointers. This will then be repeated for the following horizontals BASE_QUADRANT_SIZExLEVEL_SIZE_V number of times. 
@@ -194,7 +175,7 @@ in the first horizontal of Tile pointers. This will then be repeated for the fol
 After this, the objects in the room will be loaded and have their instances generated with the specified replacement values.
 
 !This function should only be called after Allocate_Tile_Array and Assign_Tile_Texture_Array!
-**/
+*/
 void ReadMapData(const char* PATH, DPS* o_dps, unsigned int level_id)
 {
 	printf("	Reading \"%s\" map data...\n", PATH);
