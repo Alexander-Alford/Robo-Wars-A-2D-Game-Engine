@@ -1,17 +1,18 @@
-//This file manages all graphics related functions for the program.
+/*
+*/
 
 #include <Global.h>
 #include <Grid.h>
 #include <Experiment.h>
 #include <Object.h>
 #include <C_and_R.h>
-#include <string.h>
 
-int WINDOW_WIDTH = 768;
-int WINDOW_HEIGHT = 768;
+
+uint32_t WINDOW_WIDTH = 768;
+uint32_t WINDOW_HEIGHT = 768;
 float TARGET_FPS = 60.000;
 float AVERAGE_FPS = 0;
-unsigned int FRAMES_ELAPSED = 0;
+uint32_t FRAMES_ELAPSED = 0;
 
 
 SDL_Rect SCREEN = {0, 0, 256, 256};

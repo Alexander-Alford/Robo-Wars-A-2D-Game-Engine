@@ -1,5 +1,6 @@
 #include <Global.h>
 
+#define DEBUG_TILE_INDEX 0
 
 SDL_Texture* TILES_TEXTURE;
 

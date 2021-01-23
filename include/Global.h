@@ -22,12 +22,12 @@ Header file for all global variables/objects that will be used by several object
 
 
 
-//Expanded form of the box structure. Also very useful, though takes up more space.
+//Expanded form of the box structure with velocity components.
 typedef struct
 {
 	Box box;
-	int x_vel;
-	int y_vel;
+	int x_v;
+	int y_v;
 } Vbox;
 
 
@@ -58,6 +58,6 @@ extern unsigned int LEVEL_SIZE_H;
 //These macros make it easier to call the total number of tiles in a row/column on a map.
 #define VERTICAL_LEVEL_TILES (LEVEL_SIZE_V*BASE_QUADRANT_SIZE)
 #define HORIZONTAL_LEVEL_TILES (LEVEL_SIZE_H*BASE_QUADRANT_SIZE)
-#define TOTAL_TILES (VERTICAL_LEVEL_TILES*HORIZONTAL_LEVEL_TILES)
+
 
 #endif

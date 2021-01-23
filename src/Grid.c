@@ -31,16 +31,15 @@ typedef struct
 
 
 
-int TILE_SIZE = 16;
-int QUADRANT_SIZE = 16;
-
-unsigned int LEVEL_ID = 0;
-unsigned int LEVEL_SIZE_H = 0;
-unsigned int LEVEL_SIZE_V = 0;
-
+uint8_t TILE_SIZE = 16;
+uint8_t QUADRANT_SIZE = 16;
+uint32_t LEVEL_ID = 0;
+uint8_t LEVEL_SIZE_H = 0;
+uint8_t LEVEL_SIZE_V = 0;
+uint32_t TOTAL_TILES = 0;
 
 unsigned int TOTAL_TILE_TEXTURES = 0;
-unsigned int DEBUG_TILE_INDEX = 0;
+
 
 SDL_Texture* TILES_TEXTURE = NULL;
 

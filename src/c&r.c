@@ -1,6 +1,5 @@
-/*This file exists to house all code related to collision detection and resolution methods. 
-
-
+/*
+This file houses all code related to collision detection and resolution methods. 
 */
 
 #include <Global.h>
@@ -8,23 +7,7 @@
 #include <Grid.h>
 #include <Object.h>
 
-/*
-This simple structure will be used for slope collision resolution.
-The x and y bounds will be used to make cutoffs for where slope collision/resolution will be checked.
-To define a slope we will need an integer slope value as well as an integer vertical offset from zero.
-The corner flag will allow for interpretation of which side of the slope resolution will collision target.
-*/
 
-
-typedef struct
-{
-	char F_div; //Division flag, true or false.
-	char F_corner; //Corner number.
-	
-	int m;	
-	int x;
-	int y;
-} Slope;
 
 
 
@@ -48,138 +31,16 @@ S = resolved slope
 
 
 
-void Move_VBox(VBox* p_self)
+void MoveVbox(Vbox* sself) //Inline?
 {
-p_self->box.x += p_self->x_vel;
-p_self->box.y += p_self->y_vel;	
+self->box.x += self->x_v;
+self->box.y += self->y_v;	
 }
 
-void Apply_Acceleration(VBox* p_self, int x_a, int y_a)
+void AddVel(Vbox* self, int16_t x_a, int16_t y_a) //Inline?
 {
-p_self->x_vel += x_a;
-p_self->y_vel += y_a;	
-}
-
-void Debug_VBox_Mover(VBox* p_self)
-{
-	static int sub_pix_x = 0;
-	static int sub_pix_y = 0;
-	static int sub_px_inc = 0;
-	static int sub_py_inc = 0;
-	static int hold_x = 100;
-	static int hold_y = 100;
-	
-	p_self->x_vel = 0;
-	p_self->y_vel = 0;
-	
-	if (F_KeyState[UP] == 1 || F_KeyState[UP] == 2)
-	{
-	sub_py_inc -= 10;	
-	}
-	
-	if (F_KeyState[DOWN] == 1 || F_KeyState[DOWN] == 2)
-	{
-	sub_py_inc += 10;
-	}
-
-
-	if (F_KeyState[LEFT] == 1 || F_KeyState[LEFT] == 2)
-	{
-	sub_px_inc -= 10;
-	}
-	
-	if (F_KeyState[RIGHT] == 1 || F_KeyState[RIGHT] == 2)
-	{
-	sub_px_inc += 10;
-	}
-	
-	
-	sub_pix_x += sub_px_inc;
-	sub_pix_y += sub_py_inc;
-	
-		while(sub_pix_x > 100)
-		{
-		p_self->x_vel += 1;	
-		sub_pix_x -= 100;
-		}
-		while(sub_pix_x < -100)
-		{
-		p_self->x_vel -= 1;	
-		sub_pix_x += 100;
-		}
-
-		while(sub_pix_y < -100)
-		{
-		p_self->y_vel -= 1;	
-		sub_pix_y += 100;
-		}
-		while(sub_pix_y > 100)
-		{
-		p_self->y_vel += 1;	
-		sub_pix_y -= 100;
-		}		
-	
-	if(p_self->x_vel > 10)
-	{
-	p_self->x_vel = 10;	
-	}
-	else if(p_self->x_vel < -10)
-	{
-	p_self->x_vel = -10;	
-	}
-	
-	if(p_self->y_vel > 10)
-	{
-	p_self->y_vel = 10;	
-	}
-	else if(p_self->y_vel < -10)
-	{
-	p_self->y_vel = -10;	
-	}	
-	
-	
-	if(F_KeyState[X] == 1)
-	{
-	hold_x = p_self->box.x;
-	hold_y = p_self->box.y;
-	printf("xv %d yv %d\n", p_self->x_vel, p_self->y_vel);	
-	}
-	
-	if(F_KeyState[S] == 1)
-	{
-	p_self->box.x = hold_x;
-	p_self->box.y = hold_y;	
-	}
-	
-	
-	
-}
-
-void Debug_VBox_Mover_two(VBox* p_self, unsigned int vel)
-{
-	p_self->y_vel = 0;	
-	p_self->x_vel = 0;
-	
-	if (F_KeyState[UP] == 1 || F_KeyState[UP] == 2)
-	{
-	p_self->y_vel = -vel;	
-	}
-	
-	if (F_KeyState[DOWN] == 1 || F_KeyState[DOWN] == 2)
-	{
-	p_self->y_vel = vel;
-	}
-
-
-	if (F_KeyState[LEFT] == 1 || F_KeyState[LEFT] == 2)
-	{
-	p_self->x_vel = -vel;
-	}
-	
-	if (F_KeyState[RIGHT] == 1 || F_KeyState[RIGHT] == 2)
-	{
-	p_self->x_vel = vel;
-	}	
+self->x_v += x_a;
+self->y_v += y_a;	
 }
 
 
