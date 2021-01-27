@@ -1,8 +1,6 @@
 /*
-Header file for all global variables/objects that will be used by several object files.
-//Only use extern on variables that need to be declared for reference in other files and are defined in a single file.
+Header file for all global variables/objects/macros that will be used by several object files.
 */
-
 
 #ifndef GLOBAL_H
 #define GLOBAL_H
@@ -16,18 +14,16 @@ Header file for all global variables/objects that will be used by several object
 #include <SDL_mixer.h>
 
 
-//A simple structure to describe rectangles. Incredibly useful in almost every file. Exactly the same as SDL_Rect so it became a #define for convenience.
+//This define cleans up the code a bit.
 #define Box SDL_Rect
 
 
-
-
-//Expanded form of the box structure with velocity components.
+//Box with velocity components. Very useful.
 typedef struct
 {
 	Box box;
-	int x_v;
-	int y_v;
+	int16_t x_v;
+	int16_t y_v;
 } Vbox;
 
 
@@ -46,7 +42,54 @@ extern int WINDOW_HEIGHT;
 
 extern float TARGET_FPS;
 
+//Defined in Input.c
+enum KEY_STATES
+{
+STANDBY,
+PRESSED,
+HELD,
+RELEASED
+};
+enum KEYS
+{
+UNKNOWN_KEY,
+UP,
+DOWN,
+LEFT,
+RIGHT,
+A,
+B,
+C,
+D,
+E,
+F,
+G,
+H,
+I,
+J,
+K,
+L,
+M,
+N,
+O,
+P,
+Q,
+R,
+S,
+T,
+U,
+V,
+W,
+X,
+Y,
+Z,
+SPACE,
+TOTAL_KEYS
+};
 
+uint8_t KEY_ARR_FINAL[TOTAL_KEYS];
+
+void CoreInput();
 
 //Defined in Grid.c
 extern int BASE_TILE_SIZE;

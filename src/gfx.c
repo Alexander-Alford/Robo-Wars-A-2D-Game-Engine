@@ -1,11 +1,9 @@
 /*
+This file contains all of the graphical functions and constants.
 */
 
 #include <Global.h>
-#include <Grid.h>
-#include <Experiment.h>
-#include <Object.h>
-#include <C_and_R.h>
+
 
 
 uint32_t WINDOW_WIDTH = 768;
@@ -17,27 +15,13 @@ uint32_t FRAMES_ELAPSED = 0;
 
 SDL_Rect SCREEN = {0, 0, 256, 256};
 
-long int TEXTURE_COUNT = 0;
-
-
-//Needs some SERIOUS cleaning up along with startup.c.
-
-
-typedef struct{
-	SDL_Texture* p_texture;	
-	unsigned int pnts_to_text;
-	char* Name;
-} T_Bind;
-
-
+uint32_t TEXTURE_COUNT = 0;
 
 
 //Pointers to the window, renderer, and screen texture. Render->Screen_Texture->Window
 SDL_Window* WINDOW = NULL;
 SDL_Renderer* RENDERER = NULL;
-SDL_Texture* SCREEN_TEXTURE = NULL;
-
-
+SDL_Texture* SCREEN_TEXTURE = NULL; 
 
 //Background T_Bind.
 T_Bind* Background = NULL;
@@ -84,26 +68,27 @@ SCREEN.y = 0;
 //Returns a loaded surface. Loads a surface, converts it to a texture, then returns it.
 SDL_Surface* Load_Surface(const char* PATH)
 {
-	SDL_Surface* Surface_Loaded = IMG_Load(PATH); //IMG_Load function from SDL_image.h now replaces SDL_LoadBMP.
+	SDL_Surface* retSurf = IMG_Load(PATH); 
 
-		if (Surface_Loaded == NULL)	
+		if (retSurf == NULL)	
 			{
 			printf( "Image %s failed to load! SDL_image Error: %s\n", PATH, IMG_GetError());
 			}
 
-return Surface_Loaded; 
+return retSurf; 
 }	
+
 SDL_Texture* Load_Texture(const char* PATH)
 {
-	SDL_Texture* Return_texture = NULL; 
-	SDL_Surface* BaseSurface = NULL; 
+	SDL_Texture* retTex = NULL; 
+	SDL_Surface* origSurf = NULL; 
 
-		BaseSurface = Load_Surface(PATH); 
+		origSurf = Load_Surface(PATH); 
 
-		Return_texture = SDL_CreateTextureFromSurface(RENDERER, BaseSurface); //Creates a texture from the chosen render and the surface that contains the image.
+		retTex = SDL_CreateTextureFromSurface(RENDERER, BaseSurface); 
 
 		
-		if (Return_texture == NULL)
+		if (retTex == NULL)
 			{
 			printf("Unable to create texture from %s! SDL Error: %s\n", PATH, SDL_GetError());
 			}
@@ -112,71 +97,13 @@ SDL_Texture* Load_Texture(const char* PATH)
 			TEXTURE_COUNT++;		
 			}	
 		
-		SDL_FreeSurface(BaseSurface); 
+		SDL_FreeSurface(origSurf); 
 	
-return Return_texture; 	
+return retTex; 	
 }
 
 
-//Creates and returns new T_bind or simply returns pointer of already created T_bind.
-//Destroys a T_bind without anything pointing to it.
-T_Bind* Assign_Texture(T_Bind* p_reuse, char* PATH)
-{
-	if(p_reuse == NULL)
-	{
-		T_Bind* p_new = malloc(sizeof(T_Bind));
-			
-			if(p_new != NULL)
-			{	
-			p_new->p_texture = Load_Texture(PATH);
-				
-				if(p_new->p_texture == NULL)
-				{
-				printf("Error assigning texture! \n");	
-				free(p_new);
-				return NULL;
-				}	
 
-			p_new->pnts_to_text = 1;
-			
-			unsigned int namebuffer = (strlen(PATH)+1);
-			p_new->Name = malloc((namebuffer)*(sizeof(char)));
-			strcpy(p_new->Name, PATH);
-			p_new->Name[(namebuffer - 1)] = '\0';
-			
-			printf("Texture \"%s\" assigned. \n", p_new->Name);
-			}
-	return p_new;
-	}
-	
-	else
-	{
-	p_reuse->pnts_to_text++;
-	return p_reuse;
-	}	
-}
-void Destroy_Check_Texture(T_Bind* p_check)
-{
-	if(p_check != NULL)
-	{
-	p_check->pnts_to_text--;
-	
-		if(p_check->pnts_to_text < 1)
-			{
-			SDL_DestroyTexture(p_check->p_texture);	
-			TEXTURE_COUNT--;
-			printf("	%s texture destroyed. \n", p_check->Name);
-			free(p_check->Name);
-			p_check->Name = NULL;
-			free(p_check);	
-			p_check = NULL;
-			}	
-	}
-	else
-	{
-	printf("Warning! Checking NULL texture.\n");	
-	}
-}
 
 
 void Render_Background(SDL_Texture* p_bg)
@@ -214,58 +141,30 @@ void Render_Background(SDL_Texture* p_bg)
 	}
 }
 
-//Primary object rendering function.
-void Render_temp(Object* obj, idat* target)
-{
 
-	if(target != NULL)
-	{	
-		for(unsigned register int I = 0; I < obj->size[3]; I++)
-		{
-			if(target->tb[I].flg.a == 1) //Render flag.
-			{	
-			SDL_Rect D = target->tb[I].dest;
-			D.x -= SCREEN.x;
-			D.y -= SCREEN.y;
-			
-				if(Is_On_Screen(&target->tb[I].dest).a == 1)
-				{
-				SDL_RenderCopyEx(RENDERER, ((T_Bind*)obj->p_T)->p_texture, &target->tb[I].src, &D, 0.0, NULL, target->tb[I].flip);
-				}
-			}	
-		}
-	}
-	else
-	{
-	printf("Error! Instance null! \n");	
-	}	
-}
 
+//The core loop master function.
 void ManageGraphics()
 {
 
 	//Sets the render target to the texture SCREEN_TEXTURE.
 	SDL_SetRenderTarget(RENDERER, SCREEN_TEXTURE);
 
-	SDL_RenderClear(RENDERER);
-	
-	Render_Background(Background->p_texture);
+		SDL_RenderClear(RENDERER); //Unneccessary?
+		
 
-	Object_Update(OBJECT_P_ARRAY, &Render_temp);
 
-	
-	Render_Tiles();	
+
 	SDL_SetRenderTarget(RENDERER, NULL);	
 	
 
 
 		
 	SDL_RenderClear(RENDERER);	
+	
 	SDL_RenderCopy(RENDERER, SCREEN_TEXTURE, NULL, NULL);	
-	//Update screen renderer.
 	SDL_RenderPresent(RENDERER);
 	
 	FRAMES_ELAPSED++;
 	AVERAGE_FPS = (FRAMES_ELAPSED / (SDL_GetTicks()/1000.f));
-	//printf("%f \n", AVERAGE_FPS);
 }

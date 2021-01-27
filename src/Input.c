@@ -1,20 +1,14 @@
 /**
 This file manages all forms of input by the user for this program.
 Depending on the direction this project will take, the functions may be improved to include 
-imput from mouse and gamepads. Ultimately, completely customizable controls are an ideal    
-goal, although I'm not quite sure they will be necessary or used at all.
+imput from mouse and gamepads. Completely customizable controls are an ideal    
+goal.
 **/
-#include <SDL.h>
 #include <Global.h>
 
 
-SDL_Event Input_E;
+SDL_Event InputE;
 
-
-
-
-
-//Enumerators for key states and keyboard keys. Quite useful for not getting confused when coding.
 enum KEY_STATES
 {
 STANDBY,
@@ -25,7 +19,7 @@ RELEASED
 
 enum KEYS
 {
-UNKNOWN,
+UNKNOWN_KEY,
 UP,
 DOWN,
 LEFT,
@@ -56,183 +50,136 @@ W,
 X,
 Y,
 Z,
+SPACE,
 TOTAL_KEYS
 };
 
-//Array that keeps track of every keyboard key's state. Gets updated first in the core loop.
-char F_KeyState[TOTAL_KEYS] = {0};
+//The raw array keeps track of every keyboard key's actual state, while the final array is used to  
+//provide a possibly modified version of the raw array to the other source files. 
+uint8_t KEY_ARR_RAW[TOTAL_KEYS], KEY_ARR_FINAL[TOTAL_KEYS] = {0};
 
 //Sets pressed and released key states to held and standby every core loop cycle. 
-void Set_Cont_Key()
+void SetContKey()
 {
-	
-	//Register int is more optimized for counting.
-	for(register int i = 0; i < TOTAL_KEYS; i++)
+	for(uint16_t i = 0; i < TOTAL_KEYS; i++)
 	{
-		
-		if(F_KeyState[i] == PRESSED)
+		if(KEY_ARR_RAW[i] == PRESSED)
 		{
-		F_KeyState[i] = HELD;
+		KEY_ARR_RAW[i] = HELD;
 		}
-
-		else if(F_KeyState[i] == RELEASED)
+		else if(KEY_ARR_RAW[i] == RELEASED)
 		{
-		F_KeyState[i] = STANDBY;
-		}
-		
-			
+		KEY_ARR_RAW[i] = STANDBY;
+		}		
 	}	
 }
 
-
-
-
-
-
-
-//A simple switch statement that returns the KEYS value of the key that was polled.
-enum KEYS KeyCASE()
-{
-//Enumerated variable that will be returned. Set to unknown by default.
-enum KEYS Returned_key = UNKNOWN;
-
-	switch(Input_E.key.keysym.sym)
+//Switch statement that returns the polled KEYS value.
+enum KEYS RetKey(){
+	switch(InputE.key.keysym.sym)
 	{
 	case SDLK_UP:
-	Returned_key = UP;
-	break;
+	return UP;
 	case SDLK_DOWN:
-	Returned_key = DOWN;
-	break;
+	return DOWN;
 	case SDLK_LEFT:
-	Returned_key = LEFT;
-	break;
+	return LEFT;
 	case SDLK_RIGHT:
-	Returned_key = RIGHT;
-	break;
+	return RIGHT;
 	case SDLK_a:
-	Returned_key = A;
-	break;
+	return A;
 	case SDLK_b:
-	Returned_key = B;
-	break;
+	return B;
 	case SDLK_c:
-	Returned_key = C;
-	break;
+	return C;
 	case SDLK_d:
-	Returned_key = D;
-	break;
+	return D;
 	case SDLK_e:
-	Returned_key = E;
-	break;
+	return E;
 	case SDLK_f:
-	Returned_key = F;
-	break;	
+	return F;	
 	case SDLK_g:
-	Returned_key = G;
-	break;	
+	return G;
 	case SDLK_h:
-	Returned_key = H;
-	break;
+	return H;
 	case SDLK_i:
-	Returned_key = I;
-	break;	
+	return I;
 	case SDLK_j:
-	Returned_key = J;
-	break;	
+	return J;
 	case SDLK_k:
-	Returned_key = K;
-	break;	
+	return K;	
 	case SDLK_l:
-	Returned_key = L;
-	break;
+	return L;
 	case SDLK_m:
-	Returned_key = M;
-	break;
+	return M;
 	case SDLK_n:
-	Returned_key = N;
-	break;	
+	return N;
 	case SDLK_o:
-	Returned_key = O;
-	break;	
+	return O;	
 	case SDLK_p:
-	Returned_key = P;
-	break;	
+	return P;	
 	case SDLK_q:
-	Returned_key = Q;
-	break;
+	return Q;
 	case SDLK_r:
-	Returned_key = R;
-	break;
+	return R;
 	case SDLK_s:
-	Returned_key = S;
-	break;	
+	return S;
 	case SDLK_t:
-	Returned_key = T;
-	break;	
+	return T;
 	case SDLK_u:
-	Returned_key = U;
-	break;	
+	return U;
 	case SDLK_v:
-	Returned_key = V;
-	break;
+	return V;
 	case SDLK_w:
-	Returned_key = W;
-	break;
+	return W;
 	case SDLK_x:
-	Returned_key = X;
-	break;	
+	return X;
 	case SDLK_y:
-	Returned_key = Y;
-	break;	
+	return Y;	
 	case SDLK_z:
-	Returned_key = Z;
-	break;	
-	
+	return Z;
+	default:
+	return UNKNOWN_KEY;		
 	}
-
-	return Returned_key;
 }
 
 //Core loop master function.
-void TakeInputs()
+void CoreInput()
 {
-	
-	//Sets keys as held/unpressed.
-	Set_Cont_Key();
-	
-	
-	
-	//Handle events on poll while there are any.
-	while (SDL_PollEvent( &Input_E ) != 0)
+	SetContKey();
+
+
+	while (SDL_PollEvent( &InputE ) != 0)
 	{
-		switch(Input_E.type)
+		switch(InputE.type)
 		{
-			//Exit Game if an SDL_QUIT event occurs by setting Core_Loop flag to "F".
-			case SDL_QUIT:
-			F_Core_Loop = 'F';
-			printf("SDL_QUIT event has been initiated\n");
+			
+			case SDL_QUIT: //Window closing.
+			coreloop_f = 'F';
+			puts("SDL_QUIT event has been initiated");
 			break;
 		
-			//Switch for when a key is pressed downwards.
-			case SDL_KEYDOWN:
-				if(Input_E.key.repeat == 0)
+			case SDL_KEYDOWN: //Key pressed.
+				if(InputE.key.repeat == 0)
 				{
-				F_KeyState[KeyCASE()] = PRESSED;
+				KEY_ARR[RetKey()] = PRESSED;
 				}
-			break;
-		
-			//Switch for when a key is released.
-			case SDL_KEYUP:
-			F_KeyState[KeyCASE()] = RELEASED;
+			break;		
+			case SDL_KEYUP: //Key released.
+			KEY_ARR[RetKey()] = RELEASED;
 			break;
 		
 		}
 	}
 	
-	if(F_KeyState[P] == PRESSED)
+	for(uint16_t i = 0; i < TOTAL_KEYS; i++)
+	{
+		KEY_ARR_FINAL[i] = KEY_ARR_RAW[i];		
+	}
+
+
+	if(KEY_ARR[P] == PRESSED)
 	{
 	Dump_Data_To_Console();
 	}
-	
 };
