@@ -16,7 +16,7 @@ described in one of the source files.
 */	
 int main(int argc, char* argv[]) {
 
-printf( "PROGRAM START\n" );
+puts("PROGRAM START");
 	
 Start_Window();			
 
@@ -30,7 +30,7 @@ while(coreloop_f != 'F'){
 	
 Terminate();
 
-printf( "PROGRAM END\n" );	
+puts("PROGRAM END");	
 
 return 0;
 }

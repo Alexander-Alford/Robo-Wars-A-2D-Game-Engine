@@ -1,24 +1,20 @@
 /*
-This file contains all global variables
+This file contains global function data.
 */
-
-
-
-
 
 
 
 /* 
 General purpose function for ticking a value.
-flag: 0 false, 1 true
-a = reset holder once it reaches tick cap?
-b = subtract cap from holder once cap is reached?
-*/
-int Tick(int *tick_holder, int tick_num, int tick_cap, char cap_reset, int holder_reset_val){
+0 = reset holder once it reaches tick cap?
+1 = subtract cap from holder once cap is reached?
 
-	*tick_holder += tick_num; 
+*/
+int8_t Tick(int *holder, int tick, int cap, char reset, int reset_val){
+
+	*holder += tick; 
 	
-	if(*tick_holder >= tick_cap && *tick_holder > 0)
+	if(*holder >= cap && *tick_holder > 0)
 	{
 		if(cap_reset == 'Y')
 		{

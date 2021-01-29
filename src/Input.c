@@ -178,7 +178,7 @@ void CoreInput()
 	}
 
 
-	if(KEY_ARR[P] == PRESSED)
+	if(KEY_ARR[P] == PRESSED) //Debug.
 	{
 	Dump_Data_To_Console();
 	}

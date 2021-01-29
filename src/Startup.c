@@ -1,22 +1,19 @@
 //This file manages all of the startup functions for the program.
 
 
-#include <stdio.h>
-#include <stdlib.h>
+
 #include <Global.h>
 #include <Graphics.h>
-#include <SDL_image.h>
 #include <Object.h>
 #include <Grid.h>
 #include <Experiment.h>
 #include <C_and_R.h>
-#include <SDL_mixer.h>
 #include <Sound.h>	
 
 
 //This function creates the SDL Window that the game will be using.
 void StartProgram(){
-	printf("	Initialize SDL systems and subsystems... \n");
+	puts("	Initialize SDL systems and subsystems...");
 	
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 		{ 
@@ -48,18 +45,15 @@ void StartProgram(){
 		printf("SDL_image could not be initiated! SDL_image Error: %s\n", IMG_GetError());
 		}
 
-	printf("complete. \n");
+	puts("complete.");
 
-	//Sets the render color for RENDERER to the rgb and alpha values shown. In this case, pure red.	
 	SDL_SetRenderDrawColor(RENDERER, 0xFF, 0x0, 0x0, 0xFF);	
 	
-	//Screen texture that will be rendered to window.
 	SCREEN_TEXTURE = SDL_CreateTexture(RENDERER, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN.w, SCREEN.h);
-	
 }
 
 void TerminateProgram(){
-	printf("\nProgram termination beginning... \n");
+	puts("Program termination beginning...");
 
 //Test Area------------------------
 

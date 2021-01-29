@@ -13,7 +13,7 @@
 
 
 //Core loop master function.
-void UpdateObjects()
+void CoreObject()
 {
 	
 

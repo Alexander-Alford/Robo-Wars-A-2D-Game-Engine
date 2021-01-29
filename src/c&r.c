@@ -31,7 +31,7 @@ S = resolved slope
 
 
 
-void MoveVbox(Vbox* sself) //Inline?
+void MoveVbox(Vbox* self) //Inline?
 {
 self->box.x += self->x_v;
 self->box.y += self->y_v;	
@@ -44,10 +44,8 @@ self->y_v += y_a;
 }
 
 
-
-
-//Collision detecting functions for various geometrical scenarios. 
-GBFS Det_Box_Collision(Box* A, Box* B)
+//AABB collision detection.
+uint8_t Det_Box_Collision(Box* A, Box* B)
 {	
 /*
 0 = false, 1 = true

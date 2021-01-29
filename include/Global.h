@@ -14,6 +14,22 @@ Header file for all global variables/objects/macros that will be used by several
 #include <SDL_mixer.h>
 
 
+
+//Bit masks along with some bitwise macros. 
+#define BIT0 0x1; 
+#define BIT1 0x2; 
+#define BIT2 0x4; 
+#define BIT3 0x8; 
+#define BIT4 0x10; 
+#define BIT5 0x20; 
+#define BIT6 0x40; 
+#define BIT7 0x80; 
+
+#define BIT_GET(var, mask) (var & mask)
+#define BIT_FLIP(var, mask) (var ^= mask)
+#define BIT_CLEAR(var, mask) (var &= ~mask)
+#define BIT_SET(var, mask) (var |= mask)
+
 //This define cleans up the code a bit.
 #define Box SDL_Rect
 
@@ -32,7 +48,7 @@ int Tick(int *tick_holder, int tick_num, int tick_cap, char cap_reset, int holde
 void FrameControl(); 
 
 //Defined in main.c
-extern char F_Core_Loop;
+extern char coreloop_f;
 extern int GAME_SPEED;
 
 
