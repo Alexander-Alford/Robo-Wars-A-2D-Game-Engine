@@ -1,8 +1,4 @@
-#include <Global.h>
-#include <Object.h>
-#include <C_and_R.h>
-#include <Graphics.h>
-#include <Sound.h>
+#include "global.h"
 
 
 
@@ -17,7 +13,7 @@
 0 = x_sub_ticks
 1 = y_sub_ticks
 */
-
+/*
 void Bouncer_Run(idat* self)
 {
 
@@ -47,3 +43,4 @@ self->tb[0].dest.x = self->cb[0].vb.box.x;
 self->tb[0].dest.y = self->cb[0].vb.box.y;
 	
 }
+*/

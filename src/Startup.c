@@ -1,15 +1,9 @@
-//This file manages all of the startup functions for the program.
+/*
+This file manages the functions involved in program startup and termination.
+*/
 
-
-
-#include <Global.h>
-#include <Graphics.h>
-#include <Object.h>
-#include <Grid.h>
-#include <Experiment.h>
-#include <C_and_R.h>
-#include <Sound.h>	
-
+#include "global.h"
+#include "gfx.h"
 
 //This function creates the SDL Window that the game will be using.
 void StartProgram(){
@@ -39,8 +33,8 @@ void StartProgram(){
 		
 		
 	//Initialize SDL_Image and PNG loading.
-	int F_image = IMG_INIT_PNG;
-	if (!(IMG_Init(F_image) & F_image))
+	int imageflag = IMG_INIT_PNG;
+	if (!(IMG_Init(imageflag) & imageflag))
 		{
 		printf("SDL_image could not be initiated! SDL_image Error: %s\n", IMG_GetError());
 		}
@@ -58,21 +52,20 @@ void TerminateProgram(){
 //Test Area------------------------
 
 	SDL_DestroyTexture(SCREEN_TEXTURE);
-	Destroy_Object_Array(OBJECT_P_ARRAY);
+	//Destroy_Object_Array(OBJECT_P_ARRAY);
 	
 //----------------------------------
 
-	Destroy_Check_Texture(Background);
-	Background = NULL;
+	//Destroy_Check_Texture(Background);
+	//Background = NULL;
 
 	Free_Tile_Texture();
 	Free_Tile_Array();
 	
-	printf("%d objects after termination. \n", OBJECT_COUNT);
 	
 	//Frees loaded music.
-	Mix_FreeMusic(BackgroundMusic);
-	BackgroundMusic = NULL;
+	//Mix_FreeMusic(BackgroundMusic);
+	//BackgroundMusic = NULL;
 	
 	//Destroy window and renderer.
 	SDL_DestroyWindow(WINDOW);

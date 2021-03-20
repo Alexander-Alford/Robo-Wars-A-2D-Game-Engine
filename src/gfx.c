@@ -2,12 +2,12 @@
 This file contains all of the graphical functions and constants.
 */
 
-#include <Global.h>
+#include "global.h"
 
 
 
-uint32_t WINDOW_WIDTH = 768;
-uint32_t WINDOW_HEIGHT = 768;
+uint16_t WINDOW_WIDTH = 768;
+uint16_t WINDOW_HEIGHT = 768;
 float TARGET_FPS = 60.000;
 float AVERAGE_FPS = 0;
 uint32_t FRAMES_ELAPSED = 0;
@@ -27,40 +27,40 @@ SDL_Texture* SCREEN_TEXTURE = NULL;
 T_Bind* Background = NULL;
 
 
-GBFS Is_On_Screen(SDL_Rect* test)
+uint8_t isOnScreen(SDL_Rect* test)
 {
-	return Det_Box_Collision(test, &SCREEN);
+	return boxTestColl(test, &SCREEN);
 }
 
 //Centers screen on box and does not overstep level bounds.
 void Position_Screen(Box* center)
 {
-int box_x_p_half = center->x + (center->w / 2);
-int box_y_p_half = center->y + (center->h / 2);
+	int16_t box_x_p_half = center->x + (center->w / 2);
+	int16_t box_y_p_half = center->y + (center->h / 2);
 
-int half_screenw = SCREEN.w / 2;
-int half_screenh = SCREEN.h / 2;
+	int16_t half_screenw = SCREEN.w / 2;
+	int16_t half_screenh = SCREEN.h / 2;
 
-SCREEN.x = box_x_p_half - half_screenw;
-SCREEN.y = box_y_p_half - half_screenh;
+	SCREEN.x = box_x_p_half - half_screenw;
+	SCREEN.y = box_y_p_half - half_screenh;
 
-if (SCREEN.x < 0)
-{
-SCREEN.x = 0;	
-}	
-	else if ((SCREEN.x + SCREEN.w) > (HORIZONTAL_LEVEL_TILES*BASE_TILE_SIZE))
+	if (SCREEN.x < 0)
 	{
-	SCREEN.x = 	(HORIZONTAL_LEVEL_TILES*BASE_TILE_SIZE) - SCREEN.w;
-	}
+	SCREEN.x = 0;	
+	}	
+		else if ((SCREEN.x + SCREEN.w) > (HORIZONTAL_LEVEL_TILES*BASE_TILE_SIZE))
+		{
+		SCREEN.x = 	(HORIZONTAL_LEVEL_TILES*BASE_TILE_SIZE) - SCREEN.w;
+		}
 
-if (SCREEN.y < 0)
-{
-SCREEN.y = 0;	
-}	
-	else if ((SCREEN.y + SCREEN.h) > (VERTICAL_LEVEL_TILES*BASE_TILE_SIZE))
+	if (SCREEN.y < 0)
 	{
-	SCREEN.y = (VERTICAL_LEVEL_TILES*BASE_TILE_SIZE) - SCREEN.h;
-	}
+	SCREEN.y = 0;	
+	}	
+		else if ((SCREEN.y + SCREEN.h) > (VERTICAL_LEVEL_TILES*BASE_TILE_SIZE))
+		{
+		SCREEN.y = (VERTICAL_LEVEL_TILES*BASE_TILE_SIZE) - SCREEN.h;
+		}
 	
 }
 
@@ -85,7 +85,7 @@ SDL_Texture* Load_Texture(const char* PATH)
 
 		origSurf = Load_Surface(PATH); 
 
-		retTex = SDL_CreateTextureFromSurface(RENDERER, BaseSurface); 
+		retTex = SDL_CreateTextureFromSurface(RENDERER, origSurf); 
 
 		
 		if (retTex == NULL)
@@ -105,28 +105,28 @@ return retTex;
 
 
 
-
-void Render_Background(SDL_Texture* p_bg)
+//Renders a given background texture repeated across the screen.
+void renderBackground(SDL_Texture* bg)
 {
-	if(p_bg)
+	if(bg)
 	{
-		SDL_Rect rr = {0,0,0,0};
-		GBFS buffer = {0,0,0,0,0,0,0,0};
+		SDL_Rect rr = {0};
+		uint8_t buf = 0x0;
 	
-		SDL_QueryTexture(p_bg, NULL, NULL, &rr.w, &rr.h);
+		SDL_QueryTexture(bg, NULL, NULL, &rr.w, &rr.h);
 
 	
 		while(rr.y < (SCREEN.y + SCREEN.h))
 		{
 			while(rr.x < (SCREEN.x + SCREEN.w))
 			{
-			buffer = Is_On_Screen(&rr);
+			buf = isOnScreen(&rr);
 			
-				if(buffer.a == 1)
+				if( BIT_GET(buf, BIT0, uint8_t) )
 				{
 				rr.x -= SCREEN.x;	
 				rr.y -= SCREEN.y;
-				SDL_RenderCopy(RENDERER, p_bg, NULL, &rr);	
+				SDL_RenderCopy(RENDERER, bg, NULL, &rr);	
 				rr.y += SCREEN.y;
 				rr.x += SCREEN.x;	
 			}
@@ -144,7 +144,7 @@ void Render_Background(SDL_Texture* p_bg)
 
 
 //The core loop master function.
-void ManageGraphics()
+void CoreGraphic()
 {
 
 	//Sets the render target to the texture SCREEN_TEXTURE.

@@ -2,7 +2,7 @@
 
 */
 
-#include <Global.h>
+#include "global.h"
 
 
 
@@ -13,7 +13,7 @@
 
 
 //Core loop master function.
-void CoreObject()
+void CoreLogic()
 {
 	
 

@@ -1,9 +1,4 @@
-#include <Global.h>
-#include <Object.h>
-#include <stdlib.h>
-#include <Graphics.h>
-#include <Grid.h>
-#include <Input.h>
+#include "global.h"
 
 
 
@@ -14,8 +9,7 @@
 
 
 
-
-
+/*
 
 void Print_Map(char type)
 {
@@ -226,3 +220,4 @@ void Debug_VBox_Mover_two(VBox* p_self, unsigned int vel)
 
 
 
+*/

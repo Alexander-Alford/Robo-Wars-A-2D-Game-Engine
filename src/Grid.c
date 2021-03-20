@@ -2,13 +2,8 @@
 The purpose of this file is to host all code related to level loading, tiling, and interactivity.
 */
 
-#include <Global.h>
-#include <Object.h>
-#include <Graphics.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <Experiment.h>
-#include <Sound.h>
+#include "global.h"
+
 
 
 /*
@@ -21,10 +16,9 @@ For tF_flip, N = no flip, V = vertical flip, H = horizontal flip, and B = flippe
 */
 typedef struct
 {
-	char BlockPropety;
 	unsigned int TileCode_G;
 	unsigned int CollisionCode;
-//	void* tile_animator;
+	char BlockPropety;
 	SDL_RendererFlip tF_flip;	
 } Tile;
 

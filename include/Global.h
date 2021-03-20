@@ -1,5 +1,6 @@
 /*
 Header file for all global variables/objects/macros that will be used by several object files.
+Smaller source files will have their definitions placed here instead of in their own header file.
 */
 
 #ifndef GLOBAL_H
@@ -16,25 +17,22 @@ Header file for all global variables/objects/macros that will be used by several
 
 
 //Bit masks along with some bitwise macros. 
-#define BIT0 0x1; 
-#define BIT1 0x2; 
-#define BIT2 0x4; 
-#define BIT3 0x8; 
-#define BIT4 0x10; 
-#define BIT5 0x20; 
-#define BIT6 0x40; 
-#define BIT7 0x80; 
+#define BIT0 0x1 
+#define BIT1 0x2
+#define BIT2 0x4
+#define BIT3 0x8
+#define BIT4 0x10
+#define BIT5 0x20
+#define BIT6 0x40
+#define BIT7 0x80
 
-#define BIT_GET(var, mask) (var & mask)
-#define BIT_FLIP(var, mask) (var ^= mask)
-#define BIT_CLEAR(var, mask) (var &= ~mask)
-#define BIT_SET(var, mask) (var |= mask)
+#define BIT_GET(var, mask, type) ((type) (var & mask))
+#define BIT_FLIP(var, mask, type) ((type) (var ^= mask))
+#define BIT_CLEAR(var, mask, type) ((type) (var &= ~mask))
+#define BIT_SET(var, mask, type) ((type) (var |= mask))
 
-//This define cleans up the code a bit.
 #define Box SDL_Rect
 
-
-//Box with velocity components. Very useful.
 typedef struct
 {
 	Box box;
@@ -49,16 +47,30 @@ void FrameControl();
 
 //Defined in main.c
 extern char coreloop_f;
-extern int GAME_SPEED;
 
+//Defined in startup.c
+void Start_Window();
+void Terminate();
 
-//Defined in Graphics.c
-extern int WINDOW_WIDTH;
-extern int WINDOW_HEIGHT;
-
+//Defined in gfx.c
+extern uint16_t WINDOW_WIDTH;
+extern uint16_t WINDOW_HEIGHT;
+extern SDL_Rect SCREEN;
 extern float TARGET_FPS;
 
-//Defined in Input.c
+uint8_t isOnScreen(SDL_Rect* test);
+void CoreGraphic();
+
+//Defined in sfx.c
+void CoreSound();
+
+//Defined in cnr.c
+uint8_t boxTestColl(Box* A, Box* B);
+
+//Defined in object.c
+void CoreLogic();
+
+//Defined in input.c
 enum KEY_STATES
 {
 STANDBY,
@@ -107,10 +119,9 @@ uint8_t KEY_ARR_FINAL[TOTAL_KEYS];
 
 void CoreInput();
 
-//Defined in Grid.c
+//Defined in grid.c
 extern int BASE_TILE_SIZE;
 extern int BASE_QUADRANT_SIZE;
-
 extern unsigned int LEVEL_SIZE_V;
 extern unsigned int LEVEL_SIZE_H;
 

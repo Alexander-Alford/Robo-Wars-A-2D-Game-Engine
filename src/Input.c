@@ -4,59 +4,15 @@ Depending on the direction this project will take, the functions may be improved
 imput from mouse and gamepads. Completely customizable controls are an ideal    
 goal.
 **/
-#include <Global.h>
+#include "global.h"
 
 
-SDL_Event InputE;
+SDL_Event INPUT_E;
 
-enum KEY_STATES
-{
-STANDBY,
-PRESSED,
-HELD,
-RELEASED
-};
-
-enum KEYS
-{
-UNKNOWN_KEY,
-UP,
-DOWN,
-LEFT,
-RIGHT,
-A,
-B,
-C,
-D,
-E,
-F,
-G,
-H,
-I,
-J,
-K,
-L,
-M,
-N,
-O,
-P,
-Q,
-R,
-S,
-T,
-U,
-V,
-W,
-X,
-Y,
-Z,
-SPACE,
-TOTAL_KEYS
-};
 
 //The raw array keeps track of every keyboard key's actual state, while the final array is used to  
 //provide a possibly modified version of the raw array to the other source files. 
-uint8_t KEY_ARR_RAW[TOTAL_KEYS], KEY_ARR_FINAL[TOTAL_KEYS] = {0};
+uint16_t KEY_ARR_RAW[TOTAL_KEYS], KEY_ARR_FINAL[TOTAL_KEYS] = {0};
 
 //Sets pressed and released key states to held and standby every core loop cycle. 
 void SetContKey()
@@ -76,7 +32,7 @@ void SetContKey()
 
 //Switch statement that returns the polled KEYS value.
 enum KEYS RetKey(){
-	switch(InputE.key.keysym.sym)
+	switch(INPUT_E.key.keysym.sym)
 	{
 	case SDLK_UP:
 	return UP;
@@ -148,10 +104,9 @@ void CoreInput()
 {
 	SetContKey();
 
-
-	while (SDL_PollEvent( &InputE ) != 0)
+	while (SDL_PollEvent( &INPUT_E ) != 0)
 	{
-		switch(InputE.type)
+		switch(INPUT_E.type)
 		{
 			
 			case SDL_QUIT: //Window closing.
@@ -162,11 +117,11 @@ void CoreInput()
 			case SDL_KEYDOWN: //Key pressed.
 				if(InputE.key.repeat == 0)
 				{
-				KEY_ARR[RetKey()] = PRESSED;
+				KEY_ARR_RAW[RetKey()] = PRESSED;
 				}
 			break;		
 			case SDL_KEYUP: //Key released.
-			KEY_ARR[RetKey()] = RELEASED;
+			KEY_ARR_RAW[RetKey()] = RELEASED;
 			break;
 		
 		}
@@ -178,8 +133,8 @@ void CoreInput()
 	}
 
 
-	if(KEY_ARR[P] == PRESSED) //Debug.
-	{
-	Dump_Data_To_Console();
-	}
-};
+	//if(KEY_ARR[P] == PRESSED) //Debug.
+	//{
+	//Dump_Data_To_Console();
+	//}
+}

@@ -5,6 +5,7 @@ program structure and to offload the majority of the source code into other file
 
 As a note for the rest of the source code. Any printf() usage is strictly for debugging.
 */
+#include "global.h"
 
 char coreloop_f = 'T'; 
 
@@ -22,7 +23,7 @@ Start_Window();
 
 while(coreloop_f != 'F'){
     CoreInput();
-    CoreObject();
+    CoreLogic();
     CoreGraphic();
     CoreSound();	
     FrameControl();	

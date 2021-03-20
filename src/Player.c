@@ -1,6 +1,8 @@
-/*
 
-					  
+#include "global.h"
+
+
+/*					  
 		(left)->Left
 		 |			  
 Middle-->|
@@ -10,15 +12,6 @@ Middle-->|
 									|
 									Fall
 */
-#include <Global.h>
-#include <Input.h>
-#include <Object.h>
-#include <C_and_R.h>
-#include <Graphics.h>
-#include <Sound.h>
-
-
-
 
 //iVal
 /*
@@ -50,6 +43,8 @@ g =
 h = 
 */
 
+
+/*
 
 void Decide_Player_State(idat* self)
 {
@@ -201,7 +196,7 @@ Position_Screen(&self->cb[0].vb.box); //Center screen.
 
 }
 
-
+*/
 
 
 
