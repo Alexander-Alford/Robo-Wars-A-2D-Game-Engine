@@ -1,30 +1,19 @@
-#include <Global.h>
+#ifndef GRID_H
+#define GRID_H
 
-#define DEBUG_TILE_INDEX 0
+#include "global.h"
 
-SDL_Texture* TILES_TEXTURE;
-
-typedef struct 
+typedef struct
 {
-	char BlockPropety;
-	unsigned int TileCode_G;
-	unsigned int CollisionCode;
-	char tF_flip;	
+	uint8_t tCode; //Texture code.
+	uint8_t cCode; //Collision code.
+	uint8_t bProp;
+	SDL_RendererFlip flip;	
 } Tile;
 
+SDL_Texture *TileTexture;
+Tile* LEVEL_TILES;
+uint32_t TOTAL_TILES;
 
-unsigned int TOTAL_TILE_TEXTURES;
-unsigned int DEBUG_TILE_INDEX;
 
-extern Tile* p_PRIMARY_TILE_ARRAY;
-
-void Assign_Tile_Texture_Array(const char* PATH);
-
-void Render_Tiles();
-
-void ReadMapData(const char* PATH, DPS* o_dps, unsigned int level_id);
-
-void Free_Tile_Texture();
-
-void Free_Tile_Array();
-
+#endif

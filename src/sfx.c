@@ -15,7 +15,7 @@ Mix_Music* BGmusic = NULL;
 
 
 
-void ControlSounds()
+void CoreSound()
 {
 	
 	

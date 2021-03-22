@@ -4,9 +4,11 @@ This file manages the functions involved in program startup and termination.
 
 #include "global.h"
 #include "gfx.h"
+#include "grid.h"
 
 //This function creates the SDL Window that the game will be using.
-void StartProgram(){
+void StartProgram()
+{
 	puts("	Initialize SDL systems and subsystems...");
 	
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
@@ -46,21 +48,22 @@ void StartProgram(){
 	SCREEN_TEXTURE = SDL_CreateTexture(RENDERER, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN.w, SCREEN.h);
 }
 
-void TerminateProgram(){
+void TerminateProgram()
+{
 	puts("Program termination beginning...");
 
 //Test Area------------------------
 
-	SDL_DestroyTexture(SCREEN_TEXTURE);
-	//Destroy_Object_Array(OBJECT_P_ARRAY);
+
 	
 //----------------------------------
 
 	//Destroy_Check_Texture(Background);
 	//Background = NULL;
 
-	Free_Tile_Texture();
-	Free_Tile_Array();
+	SDL_DestroyTexture(SCREEN_TEXTURE);
+	SDL_DestroyTexture(TileTexture);
+	free(LEVEL_TILES);
 	
 	
 	//Frees loaded music.

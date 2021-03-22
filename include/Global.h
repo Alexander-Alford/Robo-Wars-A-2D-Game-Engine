@@ -10,9 +10,9 @@ Smaller source files will have their definitions placed here instead of in their
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_mixer.h>
+#include "SDL.h"
+#include "SDL_image.h"
+#include "SDL_mixer.h"
 
 
 
@@ -42,7 +42,7 @@ typedef struct
 
 
 
-int Tick(int *tick_holder, int tick_num, int tick_cap, char cap_reset, int holder_reset_val);
+int Tick(int *holder, int tick, int cap, char reset, int resetVal);
 void FrameControl(); 
 
 //Defined in main.c
@@ -115,19 +115,23 @@ SPACE,
 TOTAL_KEYS
 };
 
-uint8_t KEY_ARR_FINAL[TOTAL_KEYS];
+uint16_t KEY_ARR_FINAL[TOTAL_KEYS];
 
 void CoreInput();
 
+//Defined in startup.c
+void StartProgram();
+void TerminateProgram();
+
 //Defined in grid.c
-extern int BASE_TILE_SIZE;
-extern int BASE_QUADRANT_SIZE;
-extern unsigned int LEVEL_SIZE_V;
-extern unsigned int LEVEL_SIZE_H;
+extern uint8_t TILE_SIZE;
+extern uint8_t QUADRANT_SIZE;
+extern int LEVEL_SIZE_V;
+extern int LEVEL_SIZE_H;
 
 //These macros make it easier to call the total number of tiles in a row/column on a map.
-#define VERTICAL_LEVEL_TILES (LEVEL_SIZE_V*BASE_QUADRANT_SIZE)
-#define HORIZONTAL_LEVEL_TILES (LEVEL_SIZE_H*BASE_QUADRANT_SIZE)
+#define VERTICAL_LEVEL_TILES (LEVEL_SIZE_V*QUADRANT_SIZE)
+#define HORIZONTAL_LEVEL_TILES (LEVEL_SIZE_H*QUADRANT_SIZE)
 
 
 #endif

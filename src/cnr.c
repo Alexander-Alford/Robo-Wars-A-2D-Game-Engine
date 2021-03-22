@@ -3,16 +3,16 @@ This file houses all code related to collision detection and resolution methods.
 */
 
 #include "global.h"
+#include "grid.h"
 
 
 
-
-inline void vboxMove(Vbox* self) 
+static inline void vboxMove(Vbox* self) 
 {
 self->box.x += self->x_v;
 self->box.y += self->y_v;	
 }
-inline void vboxAddVel(Vbox* self, int16_t x_a, int16_t y_a) 
+static inline void vboxAddVel(Vbox* self, int16_t x_a, int16_t y_a) 
 {
 self->x_v += x_a;
 self->y_v += y_a;	
@@ -113,19 +113,19 @@ if (V->y_v == 0) return hf;
 
 
 //Resolution types. 
-inline void boxResLeft(Box* A, Box* B)
+static inline void boxResLeft(Box* A, Box* B)
 {
 A->x = (B->x - A->w);	
 }
-inline void boxResRight(Box* A, Box* B)
+static inline void boxResRight(Box* A, Box* B)
 {
 A->x = (B->x + B->w);	
 }
-inline void boxResUp(Box* A, Box* B)
+static inline void boxResUp(Box* A, Box* B)
 {
 A->y = (B->y - A->h);	
 }
-inline void boxResDown(Box* A, Box* B)
+static inline void boxResDown(Box* A, Box* B)
 {
 A->y = (B->y + B->h);	
 }
@@ -171,38 +171,38 @@ char CollisionCodeSwitch(uint16_t collsionCode, Vbox* V, Box Tile)
 	case 1: //Solid square block.
 		return vboxSolveBox(V, &Tile);				
 	case 2: //Vertical half block left.
-		Tile.w = BASE_TILE_SIZE/2;
+		Tile.w = TILE_SIZE/2;
 		return vboxSolveBox(V, &Tile);
 	case 3: //Vertical half block right.
-		Tile.x += BASE_TILE_SIZE/2;
-		Tile.w = BASE_TILE_SIZE/2;
+		Tile.x += TILE_SIZE/2;
+		Tile.w = TILE_SIZE/2;
 		return vboxSolveBox(V, &Tile);
 	case 4: //Horizontal half block top.
-		Tile.h = BASE_TILE_SIZE/2;
+		Tile.h = TILE_SIZE/2;
 		return vboxSolveBox(V, &Tile);
 	case 9: //Horizontal half block bottom.
-		Tile.y += BASE_TILE_SIZE/2;
-		Tile.h = BASE_TILE_SIZE/2;
+		Tile.y += TILE_SIZE/2;
+		Tile.h = TILE_SIZE/2;
 		return vboxSolveBox(V, &Tile);
 	case 10: //Top left quarter block.
-		Tile.w = BASE_TILE_SIZE/2;
-		Tile.h = BASE_TILE_SIZE/2;
+		Tile.w = TILE_SIZE/2;
+		Tile.h = TILE_SIZE/2;
 		return vboxSolveBox(V, &Tile);
 	case 11: //Top right quarter block.
-		Tile.x += BASE_TILE_SIZE/2;
-		Tile.w = BASE_TILE_SIZE/2;
-		Tile.h = BASE_TILE_SIZE/2;
+		Tile.x += TILE_SIZE/2;
+		Tile.w = TILE_SIZE/2;
+		Tile.h = TILE_SIZE/2;
 		return vboxSolveBox(V, &Tile);
 	case 12: //Bottom left quarter block.
-		Tile.y += BASE_TILE_SIZE/2;
-		Tile.w = BASE_TILE_SIZE/2;
-		Tile.h = BASE_TILE_SIZE/2;
+		Tile.y += TILE_SIZE/2;
+		Tile.w = TILE_SIZE/2;
+		Tile.h = TILE_SIZE/2;
 		return vboxSolveBox(V, &Tile);
 	case 13: //Bottom right quarter block.
-		Tile.x += BASE_TILE_SIZE/2;
-		Tile.y += BASE_TILE_SIZE/2;
-		Tile.w = BASE_TILE_SIZE/2;
-		Tile.h = BASE_TILE_SIZE/2;
+		Tile.x += TILE_SIZE/2;
+		Tile.y += TILE_SIZE/2;
+		Tile.w = TILE_SIZE/2;
+		Tile.h = TILE_SIZE/2;
 		return vboxSolveBox(V, &Tile);
 	default:
 		return '0';
@@ -221,20 +221,16 @@ uint8_t TileCollisionSolver(Vbox* V)
 */
 uint8_t ret = 0x0;
 
-
-Box testTile = {0,0,BASE_TILE_SIZE,BASE_TILE_SIZE};
-
-
-
+Box testTile = {0,0,TILE_SIZE,TILE_SIZE};
 
 	if(V->x_v != 0 || V->y_v != 0) //If vbox is moving.
 	{	
 		//Vbox's position and size normalized to the grid. 
 		//Bottom_y and right_x have their position + dimension decremented for a tricky reason relating to having 0 x and y positions.
-		int left_x_norm = self->box.x/BASE_TILE_SIZE;
-		int right_x_norm = (self->box.x + self->box.w - 1)/BASE_TILE_SIZE;
-		int top_y_norm = self->box.y/BASE_TILE_SIZE;
-		int bottom_y_norm = (self->box.y + self->box.h - 1)/BASE_TILE_SIZE;
+		int left_x_norm = V->box.x/TILE_SIZE;
+		int right_x_norm = (V->box.x + V->box.w - 1)/TILE_SIZE;
+		int top_y_norm = V->box.y/TILE_SIZE;
+		int bottom_y_norm = (V->box.y + V->box.h - 1)/TILE_SIZE;
 	
 		int16_t width_norm = right_x_norm - left_x_norm + 1;
 		int16_t height_norm = bottom_y_norm - top_y_norm + 1;		
@@ -301,11 +297,11 @@ Box testTile = {0,0,BASE_TILE_SIZE,BASE_TILE_SIZE};
 				
 					if(current_tile > -1 && current_tile < TOTAL_TILES)
 					{
-						if(p_PRIMARY_TILE_ARRAY[current_tile].CollisionCode != 0)
+						if(LEVEL_TILES[current_tile].cCode != 0)
 						{	
-						testtile.x = (current_tile%HORIZONTAL_LEVEL_TILES)*BASE_TILE_SIZE;
-						testtile.y = (current_tile/HORIZONTAL_LEVEL_TILES)*BASE_TILE_SIZE;	
-						check = CollisionCodeSwitch(p_PRIMARY_TILE_ARRAY[current_tile].CollisionCode, self, &test_tile);
+						testTile.x = (current_tile%HORIZONTAL_LEVEL_TILES)*TILE_SIZE;
+						testTile.y = (current_tile/HORIZONTAL_LEVEL_TILES)*TILE_SIZE;	
+						CollisionCodeSwitch(LEVEL_TILES[current_tile].cCode, V, testTile);
 						}
 						
 					//printf("Tile %d at %d,%d.\n", current_tile, test_tile.x, test_tile.y);
@@ -322,13 +318,13 @@ Box testTile = {0,0,BASE_TILE_SIZE,BASE_TILE_SIZE};
 			
 				if(0) //Corner case. Auto resolves vertically. More complex solution possible, but not necessary. 
 				{
-					if(self->y_vel > 0)
+					if(V->y_v > 0)
 					{
-					Res_Top(&self->box, &test_tile);	
+					boxResUp(&V->box, &testTile);	
 					}
 					else
 					{
-					Res_Bottom(&self->box, &test_tile);		
+					boxResDown(&V->box, &testTile);		
 					}
 				}			
 			}
@@ -345,10 +341,10 @@ Box testTile = {0,0,BASE_TILE_SIZE,BASE_TILE_SIZE};
 
 				if(current_tile > -1 && current_tile < TOTAL_TILES)
 				{
-					if(p_PRIMARY_TILE_ARRAY[current_tile].CollisionCode != 0)
+					if(LEVEL_TILES[current_tile].cCode != 0)
 					{	
-					testtile.x = (current_tile%HORIZONTAL_LEVEL_TILES)*BASE_TILE_SIZE;
-					testtile.y = (current_tile/HORIZONTAL_LEVEL_TILES)*BASE_TILE_SIZE;	
+					testTile.x = (current_tile%HORIZONTAL_LEVEL_TILES)*TILE_SIZE;
+					testTile.y = (current_tile/HORIZONTAL_LEVEL_TILES)*TILE_SIZE;	
 					//check = CollisionCodeSwitch(p_PRIMARY_TILE_ARRAY[current_tile].CollisionCode, self, &test_tile);
 					}
 						

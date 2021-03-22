@@ -22,9 +22,7 @@ uint32_t TEXTURE_COUNT = 0;
 SDL_Window* WINDOW = NULL;
 SDL_Renderer* RENDERER = NULL;
 SDL_Texture* SCREEN_TEXTURE = NULL; 
-
-//Background T_Bind.
-T_Bind* Background = NULL;
+SDL_Texture* Background = NULL;
 
 
 uint8_t isOnScreen(SDL_Rect* test)
@@ -48,18 +46,18 @@ void Position_Screen(Box* center)
 	{
 	SCREEN.x = 0;	
 	}	
-		else if ((SCREEN.x + SCREEN.w) > (HORIZONTAL_LEVEL_TILES*BASE_TILE_SIZE))
+		else if ((SCREEN.x + SCREEN.w) > (HORIZONTAL_LEVEL_TILES*TILE_SIZE))
 		{
-		SCREEN.x = 	(HORIZONTAL_LEVEL_TILES*BASE_TILE_SIZE) - SCREEN.w;
+		SCREEN.x = 	(HORIZONTAL_LEVEL_TILES*TILE_SIZE) - SCREEN.w;
 		}
 
 	if (SCREEN.y < 0)
 	{
 	SCREEN.y = 0;	
 	}	
-		else if ((SCREEN.y + SCREEN.h) > (VERTICAL_LEVEL_TILES*BASE_TILE_SIZE))
+		else if ((SCREEN.y + SCREEN.h) > (VERTICAL_LEVEL_TILES*TILE_SIZE))
 		{
-		SCREEN.y = (VERTICAL_LEVEL_TILES*BASE_TILE_SIZE) - SCREEN.h;
+		SCREEN.y = (VERTICAL_LEVEL_TILES*TILE_SIZE) - SCREEN.h;
 		}
 	
 }

@@ -115,7 +115,7 @@ void CoreInput()
 			break;
 		
 			case SDL_KEYDOWN: //Key pressed.
-				if(InputE.key.repeat == 0)
+				if(INPUT_E.key.repeat == 0)
 				{
 				KEY_ARR_RAW[RetKey()] = PRESSED;
 				}

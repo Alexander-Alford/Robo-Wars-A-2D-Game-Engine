@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 
 puts("PROGRAM START");
 	
-Start_Window();			
+StartProgram();			
 
 while(coreloop_f != 'F'){
     CoreInput();
@@ -29,7 +29,7 @@ while(coreloop_f != 'F'){
     FrameControl();	
 }
 	
-Terminate();
+TerminateProgram();
 
 puts("PROGRAM END");	
 

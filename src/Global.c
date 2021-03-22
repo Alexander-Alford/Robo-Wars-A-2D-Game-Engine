@@ -1,7 +1,7 @@
 /*
 This file contains global function data.
 */
-
+#include "global.h"
 
 
 /* 
@@ -10,33 +10,34 @@ General purpose function for ticking a value.
 1 = subtract cap from holder once cap is reached?
 
 */
-int8_t Tick(int *holder, int tick, int cap, char reset, int reset_val){
+int Tick(int *holder, int tick, int cap, char reset, int resetVal)
+{
 
 	*holder += tick; 
 	
-	if(*holder >= cap && *tick_holder > 0)
+	if(*holder >= cap && *holder > 0)
 	{
-		if(cap_reset == 'Y')
+		if(reset == 'Y')
 		{
-		*tick_holder = holder_reset_val;
+		*holder = resetVal;
 		return 1;
 		}
 		else
 		{
-		*tick_holder -= tick_cap;	
+		*holder -= cap;	
 		return 1;
 		}
 	}
-	else if(*tick_holder <= -tick_cap && *tick_holder < 0)
+	else if(*holder <= -cap && *holder < 0)
 	{
-		if(cap_reset == 'Y')
+		if(reset == 'Y')
 		{
-		*tick_holder = holder_reset_val;
+		*holder = resetVal;
 		return -1;
 		}
 		else
 		{
-		*tick_holder -= tick_cap;	
+		*holder -= cap;	
 		return -1;
 		}		
 	}
