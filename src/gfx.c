@@ -3,7 +3,7 @@ This file contains all of the graphical functions and constants.
 */
 
 #include "global.h"
-
+#include "grid.h"
 
 
 uint16_t WINDOW_WIDTH = 768;
@@ -31,7 +31,7 @@ uint8_t isOnScreen(SDL_Rect* test)
 }
 
 //Centers screen on box and does not overstep level bounds.
-void Position_Screen(Box* center)
+void PositionScreen(Box* center)
 {
 	int16_t box_x_p_half = center->x + (center->w / 2);
 	int16_t box_y_p_half = center->y + (center->h / 2);
@@ -64,7 +64,7 @@ void Position_Screen(Box* center)
 
 
 //Returns a loaded surface. Loads a surface, converts it to a texture, then returns it.
-SDL_Surface* Load_Surface(const char* PATH)
+SDL_Surface* LoadSurface(const char* PATH)
 {
 	SDL_Surface* retSurf = IMG_Load(PATH); 
 
@@ -76,12 +76,12 @@ SDL_Surface* Load_Surface(const char* PATH)
 return retSurf; 
 }	
 
-SDL_Texture* Load_Texture(const char* PATH)
+SDL_Texture* LoadTexture(const char* PATH)
 {
 	SDL_Texture* retTex = NULL; 
 	SDL_Surface* origSurf = NULL; 
 
-		origSurf = Load_Surface(PATH); 
+		origSurf = LoadSurface(PATH); 
 
 		retTex = SDL_CreateTextureFromSurface(RENDERER, origSurf); 
 
@@ -148,9 +148,8 @@ void CoreGraphic()
 	//Sets the render target to the texture SCREEN_TEXTURE.
 	SDL_SetRenderTarget(RENDERER, SCREEN_TEXTURE);
 
-		SDL_RenderClear(RENDERER); //Unneccessary?
-		
-
+		renderBackground(Background);
+		RenderTiles();
 
 
 	SDL_SetRenderTarget(RENDERER, NULL);	

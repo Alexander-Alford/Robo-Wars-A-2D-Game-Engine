@@ -4,6 +4,7 @@ The purpose of this file is to host all code related to level loading, tiling, a
 
 #include "global.h"
 #include "gfx.h"
+#include "sfx.h"
 
 
 /*
@@ -65,7 +66,7 @@ uint_fast8_t AllocTiles()
 			LEVEL_TILES[i].cCode = 0;
 			}
 
-		printf("%d tiles have been allocated.\n", (TOTAL_TILES));
+		printf("	%d tiles have been allocated.\n", (TOTAL_TILES));
 		return 0;
 		}
 }
@@ -80,7 +81,7 @@ void AssignTileTextureArray(const char* PATH)
 	TileTexture = NULL;
 	}	
 	
-	TileTexture = Load_Texture(PATH);		
+	TileTexture = LoadTexture(PATH);		
 
 	if(!TileTexture)
 	{
@@ -117,7 +118,7 @@ void ReadMapData(const char* PATH, unsigned int level_id)
 		}
 
 	char arrowCheck = 'A';
-	uint_fast16_t levelCheck = 0;
+	unsigned int levelCheck = 0;
 
 		//Find the correct level data.
 		while(fscanf(pFile, "%c", &arrowCheck) != EOF)
@@ -125,7 +126,7 @@ void ReadMapData(const char* PATH, unsigned int level_id)
 			if(arrowCheck == '>')
 			{
 				fscanf(pFile, "%u", &levelCheck);
-					
+
 				if(levelCheck == level_id)
 				{
 				printf("Loading level %u ", levelCheck);
@@ -133,8 +134,8 @@ void ReadMapData(const char* PATH, unsigned int level_id)
 				}
 			}
 		}
-	
-		if(arrowCheck != '>')
+
+		if(arrowCheck != '>' || levelCheck != level_id)
 		{
 		printf("Error! Could not find level %d.\n", level_id);	
 		goto EXIT;	
@@ -145,7 +146,7 @@ void ReadMapData(const char* PATH, unsigned int level_id)
 	BG = malloc(100*sizeof(char));
 	MU = malloc(100*sizeof(char));
 
-	fscanf(pFile, "%X %X %s %s %s", &LEVEL_SIZE_V, &LEVEL_SIZE_H, &TT, &BG, &MU);
+	fscanf(pFile, "%X %X %s %s %s", &LEVEL_SIZE_V, &LEVEL_SIZE_H, TT, BG, MU);
 
 		if (LEVEL_SIZE_V < 1 || LEVEL_SIZE_H < 1)
 		{
@@ -163,8 +164,10 @@ void ReadMapData(const char* PATH, unsigned int level_id)
 	TOTAL_TILES = HORIZONTAL_LEVEL_TILES*VERTICAL_LEVEL_TILES;
 
 	AssignTileTextureArray(TT);	
+
+	Background = LoadTexture(BG);
 	//Background = Assign_Texture(NULL, bg_tile_music_buff);
-	//Load_Music(bg_tile_music_buff);	
+	LoadBGMusic(MU);	
 		
 		if (AllocTiles()) 
 		{
@@ -230,14 +233,14 @@ void ReadMapData(const char* PATH, unsigned int level_id)
 
 	if(pFile)
 	{
-	printf("Map loading complete. fclose return = %d\n", fclose(pFile));
+	printf("Map loading complete. fclose return = %d.\n", fclose(pFile));
 	}
 }
 
 
 
 //Function that will render the grid tiles each frame. Includes occlusion culling. Move to gfx.c.
-void Render_Tiles()
+void RenderTiles()
 {
 unsigned int V_Begin = SCREEN.y/TILE_SIZE;
 unsigned int H_Begin = SCREEN.x/TILE_SIZE;
@@ -245,7 +248,8 @@ unsigned int H_Begin = SCREEN.x/TILE_SIZE;
 unsigned int V_End = V_Begin + SCREEN.h/TILE_SIZE + 1;
 unsigned int H_End = H_Begin + SCREEN.w/TILE_SIZE + 1;
 
-SDL_Rect textureRect, renderRect = {.x=0, .y=0, .w=TILE_SIZE, .h=TILE_SIZE};
+SDL_Rect textureRect = {.x=0, .y=0, .w=TILE_SIZE, .h=TILE_SIZE};
+SDL_Rect renderRect = {.x=0, .y=0, .w=TILE_SIZE, .h=TILE_SIZE};
 
 	if(V_End > VERTICAL_LEVEL_TILES)
 	{

@@ -4,6 +4,7 @@ This file manages the functions involved in program startup and termination.
 
 #include "global.h"
 #include "gfx.h"
+#include "sfx.h"
 #include "grid.h"
 
 //This function creates the SDL Window that the game will be using.
@@ -41,11 +42,20 @@ void StartProgram()
 		printf("SDL_image could not be initiated! SDL_image Error: %s\n", IMG_GetError());
 		}
 
+	int mixflag = MIX_INIT_MP3;
+	if(Mix_Init(mixflag) != mixflag)
+		{
+		printf("SDL mixer failed to initialize format support! SDL_mixer Error: %s\n", Mix_GetError());
+		}
+
+
 	puts("complete.");
 
 	SDL_SetRenderDrawColor(RENDERER, 0xFF, 0x0, 0x0, 0xFF);	
 	
 	SCREEN_TEXTURE = SDL_CreateTexture(RENDERER, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN.w, SCREEN.h);
+
+	ReadMapData("assets/level.dat", 1);
 }
 
 void TerminateProgram()
@@ -67,7 +77,10 @@ void TerminateProgram()
 	
 	
 	//Frees loaded music.
-	//Mix_FreeMusic(BackgroundMusic);
+	if(BGmusic)
+	{
+	Mix_FreeMusic(BGmusic);
+	}
 	//BackgroundMusic = NULL;
 	
 	//Destroy window and renderer.
@@ -77,6 +90,7 @@ void TerminateProgram()
 	RENDERER = NULL;
 	
 	//Quit SDL subsystems.
+	Mix_CloseAudio();
 	Mix_Quit();
 	IMG_Quit();
 	SDL_Quit();

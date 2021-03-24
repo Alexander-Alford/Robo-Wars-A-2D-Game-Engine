@@ -18,10 +18,10 @@ extern float AVERAGE_FPS;
 extern uint32_t FRAMES_ELAPSED;
 
 //Declaration of functions.
-SDL_Surface* Load_Surface(const char* PATH);
-SDL_Texture* Load_Texture(const char* PATH);
+SDL_Surface* LoadSurface(const char* PATH);
+SDL_Texture* LoadTexture(const char* PATH);
 
 
-void Position_Screen(Box* center);
+void PositionScreen(Box* center);
 
 #endif

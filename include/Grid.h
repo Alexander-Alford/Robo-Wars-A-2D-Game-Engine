@@ -15,5 +15,7 @@ SDL_Texture *TileTexture;
 Tile* LEVEL_TILES;
 uint32_t TOTAL_TILES;
 
+void RenderTiles();
+void ReadMapData();
 
 #endif
