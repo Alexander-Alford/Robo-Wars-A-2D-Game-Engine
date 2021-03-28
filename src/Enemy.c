@@ -1,6 +1,18 @@
 #include "global.h"
 
 
+struct EnemyDat{
+	SDL_Texture* textPnt;
+	
+	uint16_t inst;
+	
+};
+
+
+
+
+
+
 
 /*special
 0 = x_vel pixels

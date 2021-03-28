@@ -40,7 +40,8 @@ typedef struct
 	int16_t y_v;
 } Vbox;
 
-
+//Defined in global.c
+extern uint8_t GAME_STATE;
 
 int Tick(int *holder, int tick, int cap, char reset, int resetVal);
 void FrameControl(); 
@@ -51,6 +52,19 @@ extern char coreloop_f;
 //Defined in startup.c
 void Start_Window();
 void Terminate();
+
+//Defined in player.c
+struct Player
+{
+	SDL_Texture *text;
+	Vbox vb;
+	int8_t HP;
+};
+
+extern struct Player Bijec;
+
+struct Player *playerPnt;
+void SetPlayer(uint32_t x, uint32_t y, uint8_t w, uint8_t h);
 
 //Defined in gfx.c
 extern uint16_t WINDOW_WIDTH;
@@ -115,7 +129,7 @@ SPACE,
 TOTAL_KEYS
 };
 
-uint16_t KEY_ARR_FINAL[TOTAL_KEYS];
+extern uint16_t KEY_ARR_FINAL[TOTAL_KEYS];
 
 void CoreInput();
 
@@ -132,6 +146,8 @@ extern int LEVEL_SIZE_H;
 //These macros make it easier to call the total number of tiles in a row/column on a map.
 #define VERTICAL_LEVEL_TILES (LEVEL_SIZE_V*QUADRANT_SIZE)
 #define HORIZONTAL_LEVEL_TILES (LEVEL_SIZE_H*QUADRANT_SIZE)
+#define VERTICAL_LEVEL_SIZE (LEVEL_SIZE_V*QUADRANT_SIZE*TILE_SIZE)
+#define HORIZONTAL_LEVEL_SIZE (LEVEL_SIZE_H*QUADRANT_SIZE*TILE_SIZE)
 
 
 #endif

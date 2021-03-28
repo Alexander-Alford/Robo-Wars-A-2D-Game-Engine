@@ -1,4 +1,4 @@
-//#include "global.h"
+#include "global.h"
 
 
 
@@ -190,34 +190,34 @@ void Debug_VBox_Mover(VBox* p_self)
 	
 }
 
-void Debug_VBox_Mover_two(VBox* p_self, unsigned int vel)
+*/
+
+void DebugVBoxMover(Vbox* p_self, int vel)
 {
-	p_self->y_vel = 0;	
-	p_self->x_vel = 0;
+	p_self->y_v = 0;	
+	p_self->x_v = 0;
 	
-	if (F_KeyState[UP] == 1 || F_KeyState[UP] == 2)
+	if (KEY_ARR_FINAL[UP] == 1 || KEY_ARR_FINAL[UP] == 2)
 	{
-	p_self->y_vel = -vel;	
+	p_self->y_v = -vel;	
 	}
 	
-	if (F_KeyState[DOWN] == 1 || F_KeyState[DOWN] == 2)
+	if (KEY_ARR_FINAL[DOWN] == 1 || KEY_ARR_FINAL[DOWN] == 2)
 	{
-	p_self->y_vel = vel;
+	p_self->y_v = vel;
 	}
 
 
-	if (F_KeyState[LEFT] == 1 || F_KeyState[LEFT] == 2)
+	if (KEY_ARR_FINAL[LEFT] == 1 || KEY_ARR_FINAL[LEFT] == 2)
 	{
-	p_self->x_vel = -vel;
+	p_self->x_v = -vel;
 	}
 	
-	if (F_KeyState[RIGHT] == 1 || F_KeyState[RIGHT] == 2)
+	if (KEY_ARR_FINAL[RIGHT] == 1 || KEY_ARR_FINAL[RIGHT] == 2)
 	{
-	p_self->x_vel = vel;
+	p_self->x_v = vel;
 	}	
 }
 
 
 
-
-*/

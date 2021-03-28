@@ -4,6 +4,19 @@ This file contains global function data.
 #include "global.h"
 
 
+/*
+0 = startup
+1 = title screen
+2 = standardgame
+3 = in between levels
+*/
+uint8_t GAME_STATE = 0;
+
+
+
+
+
+
 /* 
 General purpose function for ticking a value.
 0 = reset holder once it reaches tick cap?

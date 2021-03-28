@@ -12,11 +12,15 @@ float TARGET_FPS = 60.000;
 float AVERAGE_FPS = 0;
 uint32_t FRAMES_ELAPSED = 0;
 
+typedef struct
+{
+	SDL_Texture* tex;
+	uint8_t pnt;
+} text_t;
 
 SDL_Rect SCREEN = {0, 0, 256, 256};
 
 uint32_t TEXTURE_COUNT = 0;
-
 
 //Pointers to the window, renderer, and screen texture. Render->Screen_Texture->Window
 SDL_Window* WINDOW = NULL;
@@ -33,14 +37,14 @@ uint8_t isOnScreen(SDL_Rect* test)
 //Centers screen on box and does not overstep level bounds.
 void PositionScreen(Box* center)
 {
-	int16_t box_x_p_half = center->x + (center->w / 2);
-	int16_t box_y_p_half = center->y + (center->h / 2);
+	int16_t boxCentX = center->x + (center->w / 2);
+	int16_t boxCentY = center->y + (center->h / 2);
 
-	int16_t half_screenw = SCREEN.w / 2;
-	int16_t half_screenh = SCREEN.h / 2;
+	int16_t halfscreenw = SCREEN.w / 2;
+	int16_t halfscreenh = SCREEN.h / 2;
 
-	SCREEN.x = box_x_p_half - half_screenw;
-	SCREEN.y = box_y_p_half - half_screenh;
+	SCREEN.x = boxCentX - halfscreenw;
+	SCREEN.y = boxCentY - halfscreenh;
 
 	if (SCREEN.x < 0)
 	{
@@ -103,6 +107,7 @@ return retTex;
 
 
 
+
 //Renders a given background texture repeated across the screen.
 void renderBackground(SDL_Texture* bg)
 {
@@ -150,7 +155,8 @@ void CoreGraphic()
 
 		renderBackground(Background);
 		RenderTiles();
-
+		SDL_RenderCopy(RENDERER, Bijec.text, NULL, &Bijec.vb.box);
+		
 
 	SDL_SetRenderTarget(RENDERER, NULL);	
 	

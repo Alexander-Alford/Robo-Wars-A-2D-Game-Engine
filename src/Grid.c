@@ -12,8 +12,8 @@ This structure will encapsulate the tiles that will compose every map in the gam
 The x and y coordinates as well as the ID will be taken from the base Object structure.
 The texture for the tile that will be rendered will be pointed to in the TILE_TEXTURE_ARRAY.
 A bound texture is unneeded because all grid tiles have global dimensions of BASE_TILE_SIZE (16x16).
-Tile_Code_G will tell which member of TILE_TEXTURE_ARRAY the p_TileText will point to.
-For tF_flip, N = no flip, V = vertical flip, H = horizontal flip, and B = flipped both ways.
+tCode will tell which section of the tile's texture gets rendered.
+For flip, N = no flip, V = vertical flip, H = horizontal flip, and B = flipped both ways.
 */
 typedef struct
 {
@@ -39,7 +39,7 @@ int TILES_TEXTURE_H = 0;
 //Level tile array.
 Tile* LEVEL_TILES = NULL;
 //FILE pointer that will allow the map data to be read.
-FILE* LEVEL_FILE = NULL;
+//FILE* LEVEL_FILE = NULL;
 
 
 
@@ -102,6 +102,12 @@ void AssignTileTextureArray(const char* PATH)
 	
 	printf("	Tile textures successfully created with %d Tile textures from \"%s\" texture.\n", TILES_TEXTURE_H*TILES_TEXTURE_W, PATH);	
 }
+
+uint32_t getTileAtPos(int32_t x, int32_t y)
+{
+	return ( (x/TILE_SIZE) + ((y/TILE_SIZE)*(HORIZONTAL_LEVEL_TILES)) );
+}
+
 
 
 //Reads formatted map data from specified file and loads it for a level.

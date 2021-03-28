@@ -54,8 +54,12 @@ void StartProgram()
 	SDL_SetRenderDrawColor(RENDERER, 0xFF, 0x0, 0x0, 0xFF);	
 	
 	SCREEN_TEXTURE = SDL_CreateTexture(RENDERER, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN.w, SCREEN.h);
-
+	
+	Bijec.text = LoadTexture("assets/Test.png");
+	
 	ReadMapData("assets/level.dat", 1);
+	
+	GAME_STATE = 2;
 }
 
 void TerminateProgram()
@@ -73,6 +77,7 @@ void TerminateProgram()
 
 	SDL_DestroyTexture(SCREEN_TEXTURE);
 	SDL_DestroyTexture(TileTexture);
+	SDL_DestroyTexture(Bijec.text);
 	free(LEVEL_TILES);
 	
 	

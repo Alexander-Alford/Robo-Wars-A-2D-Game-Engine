@@ -7,7 +7,7 @@ This file houses all code related to collision detection and resolution methods.
 
 
 
-static inline void vboxMove(Vbox* self) 
+void vboxMove(Vbox* self) 
 {
 self->box.x += self->x_v;
 self->box.y += self->y_v;	
@@ -59,56 +59,56 @@ uint8_t boxTestColl(Box* A, Box* B)
 
 
 //Collision types. These functions decide how the collision should be resolved.
-char vboxCTbox(Vbox* V, Box* B)
+uint8_t vboxCTbox(Vbox* V, Box* B)
 {
 //Velocity Overlap Difference Horizontal and Vertical.	
 int16_t VOD_H = 0;
 int16_t VOD_V = 0;
 
-//Resolve flags.
-char vf = '0';
-char hf = '0';
+//Resolve flag.
+uint8_t flag = 0x0;
 
-
-	if (V->x_v > 0)
+	if (V->x_v > 0)//Resolve Left.
 	{
 	VOD_H = (V->x_v - ((V->box.x + V->box.w) - B->x));
-	hf = 'l';
+	BIT_SET(flag, BIT0, uint8_t);
 	}	
-	else if (V->x_v < 0)
+	else if (V->x_v < 0)//Resolve Right.
 	{
 	VOD_H = (abs(V->x_v) - ((B->x + B->w) - V->box.x));
-	hf = 'r';
+	BIT_SET(flag, BIT1, uint8_t);
 	}
 
-	if (V->y_v > 0)
+	if (V->y_v > 0)//Resolve Up.
 	{
 	VOD_V = (V->y_v - ((V->box.y + V->box.h) - B->y));
-	vf = 'u';
+	BIT_SET(flag, BIT2, uint8_t);
 	}	
-	else if (V->y_v < 0)
+	else if (V->y_v < 0)//Resolve Down.
 	{
 	VOD_V = (abs(V->y_v) - ((B->y + B->h) - V->box.y));
-	vf = 'd';
+	BIT_SET(flag, BIT3, uint8_t);
 	}
 
 
-if (V->x_v == 0) return vf;	
-if (V->y_v == 0) return hf;	
+if (V->x_v == 0 || V->y_v == 0) return flag;	
+	
 
 
 	if (VOD_H > VOD_V)
 	{
-	return hf;
+	BIT_CLEAR(flag, (BIT2 | BIT3), uint8_t);
 	}
 	else if (VOD_H < VOD_V)
 	{
-	return vf;
+	BIT_CLEAR(flag, (BIT0 | BIT1), uint8_t);
 	}	
 	else
 	{
-	return 'c';	
-	}	
+	return BIT4;	
+	}
+
+return flag;	
 }
 
 
@@ -132,9 +132,9 @@ A->y = (B->y + B->h);
 
 
 //AABB solver. Detects and resolves collision for vbox and box.
-char vboxSolveBox(Vbox* V, Box* B) 
+uint8_t vboxSolveBox(Vbox* V, Box* B) 
 {
-	char ret = '0';	
+	uint8_t ret = 0x0;	
 
 	if( BIT_GET(boxTestColl(&V->box, B), BIT0, uint8_t) )
 	{	
@@ -142,16 +142,16 @@ char vboxSolveBox(Vbox* V, Box* B)
 
 		switch (ret)
 		{
-			case 'r':
+			case BIT0:
+				boxResLeft(&V->box, B);
+				break;			
+			case BIT1:
 				boxResRight(&V->box, B);
 				break;
-			case 'l':
-				boxResLeft(&V->box, B);
-				break;
-			case 'u':
+			case BIT2:
 				boxResUp(&V->box, B);
 				break;
-			case 'd':
+			case BIT3:
 				boxResDown(&V->box, B);
 				break;		
 		}
@@ -161,7 +161,7 @@ char vboxSolveBox(Vbox* V, Box* B)
 
 
 //Switch function used to resolve every kind of tile collision and return how it resolved.
-char CollisionCodeSwitch(uint16_t collsionCode, Vbox* V, Box Tile)
+uint8_t CollisionCodeSwitch(uint16_t collsionCode, Vbox* V, Box Tile)
 {
 	switch(collsionCode)
 	{	
@@ -205,7 +205,7 @@ char CollisionCodeSwitch(uint16_t collsionCode, Vbox* V, Box Tile)
 		Tile.h = TILE_SIZE/2;
 		return vboxSolveBox(V, &Tile);
 	default:
-		return '0';
+		return 0x0;
 	}	
 }
 
@@ -213,8 +213,8 @@ char CollisionCodeSwitch(uint16_t collsionCode, Vbox* V, Box Tile)
 uint8_t TileCollisionSolver(Vbox* V)
 {
 /*	
-0 = Right resolution.
-1 = Left resolution.
+0 = Left resolution.
+1 = Right resolution.
 2 = Top resolution.
 3 = Bottom resolution.
 4 = Corner resolution.
@@ -233,13 +233,11 @@ Box testTile = {0,0,TILE_SIZE,TILE_SIZE};
 		int bottom_y_norm = (V->box.y + V->box.h - 1)/TILE_SIZE;
 	
 		int16_t width_norm = right_x_norm - left_x_norm + 1;
-		int16_t height_norm = bottom_y_norm - top_y_norm + 1;		
-		//Buffer for ret.
-		//GBFS check = {0,0,0,0,0,0,0,0};		
+		int16_t height_norm = bottom_y_norm - top_y_norm + 1;			
 
 		unsigned int final_tile;
-		signed char h_increment;
-		signed int v_increment;
+		int8_t h_increment;
+		int16_t v_increment;
 
 		int current_tile = 0;
 
@@ -277,55 +275,39 @@ Box testTile = {0,0,TILE_SIZE,TILE_SIZE};
 			int x_scanned = 0;
 			int y_scanned = 0;
 	
-			//Scans every tile except for the corner tile, the only one that can resolve as a corner.
-			//May try same function with x row and y column scanned separately.
-			for(unsigned register int I = 0; I < total_tiles; I++)
-			{
-				
-				if(flip_flag == 'X') //Scan x tile.
+				//Scans every tile except for the corner tile, the only one that can resolve as a corner.
+				//May try same function with x row and y column scanned separately.
+				for(uint_fast32_t I = 0; I < total_tiles; I++)
 				{
-				x_scanned++;					
-				current_tile = final_tile + (x_scanned - width_norm)*h_increment;	
-				flip_flag = (y_scanned < (height_norm - 1)) ? 'Y' : 'X'; //If there are still more y tiles to scan.
-				}	
-				else //Scan y tile.
-				{
-				y_scanned++;					
-				current_tile = final_tile + (y_scanned - height_norm)*v_increment;
-				flip_flag = (x_scanned < (width_norm - 1)) ? 'X' : 'Y'; //If there are still more x tiles to scan.
-				}	
 				
-					if(current_tile > -1 && current_tile < TOTAL_TILES)
+					if(flip_flag == 'X') //Scan x tile.
 					{
-						if(LEVEL_TILES[current_tile].cCode != 0)
-						{	
-						testTile.x = (current_tile%HORIZONTAL_LEVEL_TILES)*TILE_SIZE;
-						testTile.y = (current_tile/HORIZONTAL_LEVEL_TILES)*TILE_SIZE;	
-						CollisionCodeSwitch(LEVEL_TILES[current_tile].cCode, V, testTile);
-						}
-						
-					//printf("Tile %d at %d,%d.\n", current_tile, test_tile.x, test_tile.y);
-					
-					//ret.a |= check.a; //Bitwise OR adds any 1 collision flags to the return GBFD.
-					//ret.b |= check.b;
-					//ret.c |= check.c;
-					//ret.d |= check.d;
-					//ret.e |= check.e;
-					//ret.f |= check.f;
+					x_scanned++;					
+					current_tile = final_tile + (x_scanned - width_norm)*h_increment;	
+					flip_flag = (y_scanned < (height_norm - 1)) ? 'Y' : 'X'; //If there are still more y tiles to scan.
 					}	
-			}
+					else //Scan y tile.
+					{
+					y_scanned++;					
+					current_tile = final_tile + (y_scanned - height_norm)*v_increment;
+					flip_flag = (x_scanned < (width_norm - 1)) ? 'X' : 'Y'; //If there are still more x tiles to scan.
+					}	
+				
+						if(current_tile > -1 && current_tile < TOTAL_TILES)
+						{
+							if(LEVEL_TILES[current_tile].cCode != 0)
+							{	
+							testTile.x = (current_tile%HORIZONTAL_LEVEL_TILES)*TILE_SIZE;
+							testTile.y = (current_tile/HORIZONTAL_LEVEL_TILES)*TILE_SIZE;	
+							ret |= CollisionCodeSwitch(LEVEL_TILES[current_tile].cCode, V, testTile);
+							}
+						}	
+				}
 			
 			
-				if(0) //Corner case. Auto resolves vertically. More complex solution possible, but not necessary. 
-				{
-					if(V->y_v > 0)
-					{
-					boxResUp(&V->box, &testTile);	
-					}
-					else
-					{
-					boxResDown(&V->box, &testTile);		
-					}
+				if( BIT_GET(ret, BIT4, uint8_t) ) //Corner case. Auto resolves vertically. More complex solution possible, but not necessary. 
+				{	
+					(V->y_v > 0) ? boxResUp(&V->box, &testTile) : boxResDown(&V->box, &testTile);
 				}			
 			}
 		
@@ -345,17 +327,8 @@ Box testTile = {0,0,TILE_SIZE,TILE_SIZE};
 					{	
 					testTile.x = (current_tile%HORIZONTAL_LEVEL_TILES)*TILE_SIZE;
 					testTile.y = (current_tile/HORIZONTAL_LEVEL_TILES)*TILE_SIZE;	
-					//check = CollisionCodeSwitch(p_PRIMARY_TILE_ARRAY[current_tile].CollisionCode, self, &test_tile);
+					ret |= CollisionCodeSwitch(LEVEL_TILES[current_tile].cCode, V, testTile);
 					}
-						
-				
-					
-				//ret.a |= check.a; 
-				//ret.b |= check.b;
-				//ret.c |= check.c;
-				//ret.d |= check.d;
-				//ret.e |= check.e;
-				//ret.f |= check.f;
 				}			
 			}
 			//printf("Tiles = %d - %d = %d.\n", right_x_norm, left_x_norm ,width_norm);
